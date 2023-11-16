@@ -44,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.frameLayoutActivityMain,new FragmentPhoto());
+        ft.commit();
+
         btnNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -68,16 +72,16 @@ public class MainActivity extends AppCompatActivity {
 //                       break;
 //                  default:
 //              }
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.frameLayoutActivityMain,selectedFragment);
-                ft.commit();
+                if(selectedFragment!=null) {
+                    ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.frameLayoutActivityMain, selectedFragment);
+                    ft.commit();
+                }
                 return true;
             }
         });
 
-        ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.frameLayoutActivityMain,new FragmentPhoto());
-        ft.commit();
+
 
 
 

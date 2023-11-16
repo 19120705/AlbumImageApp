@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.albumapp.ImageAdapter;
@@ -26,18 +28,11 @@ public class FragmentPhoto extends Fragment {
     private androidx.appcompat.widget.Toolbar toolbar_photo;
 
     private Context context;
-    private MainActivity main;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        try{
-            context = getActivity();
-            main = (MainActivity) getActivity();
-        }catch (IllegalStateException e){
-            throw new IllegalStateException("MainActivity must implement callbacks");
-        }
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
@@ -45,8 +40,13 @@ public class FragmentPhoto extends Fragment {
         View view = inflater.inflate(R.layout.fragment_photo, null);
         context = view.getContext();
         recyclerView = view.findViewById(R.id.recyclerViewPhoto);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
         toolbar_photo = view.findViewById(R.id.toolbar_photo);
         toolbar_photo.inflateMenu(R.menu.menu_top);
+
         setupRecyclerView();
         return view;
     }
