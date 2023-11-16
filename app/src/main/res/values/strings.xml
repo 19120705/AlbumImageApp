@@ -1,3 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AlbumApp</string>
+
+    <string name="app_name">Album Photo</string>
+    <string name="picture">Photo</string>
+    <string name="search">Search</string>
+    <string name="share">Share</string>
+    <string name="favorite">Favorite</string>
+    <string name="photo">Photo</string>
+    <string name="album">Album</string>
+    <string name="secret">Private</string>
+    <string name="camera">Camera</string>
+    <string name="settings">Setting</string>
+    <string name="filter">Filter</string>
 </resources>
