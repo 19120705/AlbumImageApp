@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.albumapp.ImageAdapter;
-import com.example.albumapp.MainActivity;
+import com.example.albumapp.adapters.ImageAdapter;
 import com.example.albumapp.R;
 
 import java.util.ArrayList;
@@ -29,25 +27,26 @@ public class FragmentPhoto extends Fragment {
 
     private Context context;
 
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//
+//    }
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+    public View onCreateView(@NonNull LayoutInflater inflater,@Nullable ViewGroup container,@Nullable Bundle
                              savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_photo, null);
+        View view = inflater.inflate(R.layout.fragment_photo, container, false);
         context = view.getContext();
         recyclerView = view.findViewById(R.id.recyclerViewPhoto);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
+        setupRecyclerView();
 
         toolbar_photo = view.findViewById(R.id.toolbar_photo);
         toolbar_photo.inflateMenu(R.menu.menu_top);
 
-        setupRecyclerView();
         return view;
     }
 

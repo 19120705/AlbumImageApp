@@ -13,10 +13,10 @@
         android:layout_height="652dp"
         android:layout_weight="1">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView1"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPaper2"
             android:layout_width="match_parent"
-            android:layout_height="750dp" />
+            android:layout_height="match_parent"/>
 
     </FrameLayout>
 
