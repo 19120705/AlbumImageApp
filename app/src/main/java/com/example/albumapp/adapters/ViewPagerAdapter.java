@@ -40,7 +40,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 3:
                 return new FragmentAlbumFavorite();
             default:
-                return null;
+                return new FragmentPhoto();
         }
     }
 
