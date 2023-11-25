@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.albumapp.adapters.ImageAdapter;
 import com.example.albumapp.R;
+import com.example.albumapp.models.MyImage;
+import com.example.albumapp.utility.GetAllPhotoFromDisk;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,44 +60,16 @@ public class FragmentPhoto extends Fragment {
 
     private void setupRecyclerView() {
 //        // Thiết lập RecyclerView với Adapter
-        List<String> images = getImages();
-        ImageAdapter adapter = new ImageAdapter(context, images);
+        List<MyImage> images = GetAllPhotoFromDisk.getImages(getContext());
+        ImageAdapter adapter = new ImageAdapter(context, getListImagePaths(images));
         recyclerView.setAdapter(adapter);
-
     }
 
-    private List<String> getImages() {
-        Uri collection;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
-        } else {
-            collection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+    private List<String> getListImagePaths(List<MyImage> images) {
+        List<String> listPath = new ArrayList<>();
+        for (int i = 0; i < images.size(); i++) {
+            listPath.add(images.get(i).getPath());
         }
-
-        // Chỉ lấy các cột mà chúng ta quan tâm
-        String[] projection = new String[] {
-                MediaStore.Images.Media.DATA,
-        };
-
-        // Sắp xếp theo ngày thêm vào
-        String sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC";
-
-        // Truy vấn Content Provider
-        Cursor cursor = getContext().getContentResolver().query(collection, projection, null, null, sortOrder);
-
-        // Lấy chỉ số của cột chúng ta quan tâm
-        int dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
-        List<String> imagePaths = new ArrayList<>();
-
-        while (cursor.moveToNext()) {
-            // Lấy đường dẫn của hình ảnh
-            String data = cursor.getString(dataIndex);
-            imagePaths.add(data);
-        }
-
-        cursor.close();
-        return imagePaths;
+        return listPath;
     }
 }
