@@ -35,6 +35,7 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
 
     public void setData(List<MyImage> listImages) {
         this.listImages = listImages;
+        this.listSelectedImages = new ArrayList<>();
         notifyDataSetChanged();
     }
 
@@ -81,13 +82,8 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
         return 0;
     }
 
-    public class ImageSelectHolder extends RecyclerView.ViewHolder {
-        private ImageView imgPhoto;
-
-        public ImageSelectHolder(@NonNull View itemView) {
-            super(itemView);
-            imgPhoto = itemView.findViewById(R.id.imgPhoto);
-        }
+    public List<MyImage> getListSelectedImage() {
+        return listSelectedImages;
     }
 
     public void addList(MyImage image) {
@@ -96,5 +92,14 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
 
     public void removeList(MyImage image) {
         listSelectedImages.remove(image);
+    }
+
+    public class ImageSelectHolder extends RecyclerView.ViewHolder {
+        private ImageView imgPhoto;
+
+        public ImageSelectHolder(@NonNull View itemView) {
+            super(itemView);
+            imgPhoto = itemView.findViewById(R.id.imgPhoto);
+        }
     }
 }

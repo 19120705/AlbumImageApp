@@ -32,7 +32,7 @@ public class CreateAlbumActivity extends AppCompatActivity{
     private EditText edtTitleAlbum;
     private RecyclerView rycAddAlbum;
     private List<MyImage> listImage;
-    private ArrayList<MyImage> listImageSelected;
+    private List<MyImage> listImageSelected;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +62,6 @@ public class CreateAlbumActivity extends AppCompatActivity{
                         Toast.makeText(getApplicationContext(), "Không được chứa kí tự #", Toast.LENGTH_SHORT).show();
                     }
                     else {
-//                        CreateAlbumAsyncTask createAlbumAsyncTask = new CreateAlbumAsyncTask();
-//                        createAlbumAsyncTask.execute();
                         createAlbum();
                     }
                 }
@@ -96,6 +94,10 @@ public class CreateAlbumActivity extends AppCompatActivity{
         if(!directtory.exists()){
             directtory.mkdirs();
             Log.e("File-no-exist",directtory.getPath());
+        }
+        ImageSelectAdapter adapter = (ImageSelectAdapter) rycAddAlbum.getAdapter();
+        if (adapter!=null) {
+            listImageSelected = adapter.getListSelectedImage();
         }
         String[] paths = new String[listImageSelected.size()];
         int i =0;

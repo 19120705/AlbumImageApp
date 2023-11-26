@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.albumapp.activities.CreateAlbumActivity;
@@ -21,6 +22,7 @@ import com.example.albumapp.adapters.AlbumAdapter;
 import com.example.albumapp.models.MyAlbum;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.R;
+import com.example.albumapp.utility.GetAllPhotoFromDisk;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +38,19 @@ public class FragmentAlbum extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_album, container, false);
-
+        listImage = GetAllPhotoFromDisk.getImages(view.getContext());
+        listAlbum = getListAlbum(listImage);
         toolbar_album = view.findViewById(R.id.toolbar_album);
+        recyclerView = view.findViewById(R.id.recyclerViewAlbum);
+        setViewRyc();
+        albumAdapter.setData(listAlbum);
         createToolBar();
         return view;
+    }
+    private void setViewRyc() {
+        recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
+        albumAdapter = new AlbumAdapter(listAlbum, getContext());
+        recyclerView.setAdapter(albumAdapter);
     }
     private void createToolBar() {
         toolbar_album.inflateMenu(R.menu.menu_top_album);
@@ -57,6 +68,26 @@ public class FragmentAlbum extends Fragment {
                 return true;
             }
         });
+    }
+    private List<MyAlbum> getListAlbum(List<MyImage> listImage) {
+        List<String> ref = new ArrayList<>();
+        List<MyAlbum> listAlbum = new ArrayList<>();
+
+        for (int i = 0; i < listImage.size(); i++) {
+            String[] _array = listImage.get(i).getPath().split("/");
+            String _pathFolder = listImage.get(i).getPath().substring(0, listImage.get(i).getPath().lastIndexOf("/"));
+            String _name = _array[_array.length - 2];
+            if (!ref.contains(_pathFolder)) {
+                ref.add(_pathFolder);
+                MyAlbum token = new MyAlbum(listImage.get(i), _name);
+                token.setPathFolder(_pathFolder);
+                token.addItem(listImage.get(i));
+                listAlbum.add(token);
+            } else {
+                listAlbum.get(ref.indexOf(_pathFolder)).addItem(listImage.get(i));
+            }
+        }
+        return listAlbum;
     }
     private void eventSearch(@NonNull MenuItem item) {
         SearchView searchView = (SearchView) item.getActionView();

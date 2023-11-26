@@ -9,7 +9,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="30dp"
         android:layout_gravity="center"
-        android:id="@+id/ryc_album"
+        android:id="@+id/recyclerViewAlbum"
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />
 </LinearLayout>

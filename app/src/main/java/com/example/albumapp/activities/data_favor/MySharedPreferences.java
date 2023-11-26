@@ -24,10 +24,10 @@ public class MySharedPreferences {
 
     public void deleteListFavor (String key){
         SharedPreferences settings = context.getSharedPreferences(MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
-        settings.edit().remove("PREF_IMG_FAVOR").commit();
+        settings.edit().remove("PREF_IMG_FAVOR").apply();
     }
 
-    public void putStringSet(String key, Set value){
+    public void putStringSet(String key, Set<String> value){
         SharedPreferences sharedPreferences = context.getSharedPreferences(MY_SHARED_PREFERENCES,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putStringSet(key,value);

@@ -26,6 +26,7 @@ public class DataLocalManager {
     }
 
     public static void setListImg(Set<String> listImg){
+
         DataLocalManager.getInstance().mySharedPreferences.deleteListFavor(PREF_IMG_FAVOR);
 
         DataLocalManager.getInstance().mySharedPreferences.putStringSet(PREF_IMG_FAVOR, listImg);
@@ -35,9 +36,7 @@ public class DataLocalManager {
     public static void setListImgByList(List<String> listImg){
         Set<String> setListImg = new HashSet<>();
 
-        for (String i: listImg) {
-            setListImg.add(i);
-        }
+        setListImg.addAll(listImg);
         DataLocalManager.getInstance().mySharedPreferences.deleteListFavor(PREF_IMG_FAVOR);
 
         DataLocalManager.getInstance().mySharedPreferences.putStringSet(PREF_IMG_FAVOR, setListImg);
@@ -49,10 +48,7 @@ public class DataLocalManager {
 
         List<String> listImg = new ArrayList<>();
 
-        for (String i: strJsonArray) {
-            listImg.add(i);
-        }
-
+        listImg.addAll(strJsonArray);
 
         return listImg;
     }
