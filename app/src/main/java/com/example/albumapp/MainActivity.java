@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     viewPager2.setCurrentItem(1);
                 }
-                if(item.getItemId()==R.id.secret)
+                if(item.getItemId()==R.id.trash)
                 {
                     viewPager2.setCurrentItem(2);
                 }
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
 
-                        btnNavigationView.getMenu().findItem(R.id.secret).setChecked(true);
+                        btnNavigationView.getMenu().findItem(R.id.trash).setChecked(true);
                         break;
                     case 3:
 

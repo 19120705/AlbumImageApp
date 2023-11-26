@@ -54,7 +54,6 @@ public class DataLocalManager {
     }
 
     public static Set<String> getListSet(){
-        Set<String> setImg = DataLocalManager.getInstance().mySharedPreferences.getStringSet(PREF_IMG_FAVOR);
-        return setImg;
+        return DataLocalManager.getInstance().mySharedPreferences.getStringSet(PREF_IMG_FAVOR);
     }
 }

@@ -19,7 +19,7 @@ public class MySharedPreferences {
     public Set<String> getStringSet(String key){
         SharedPreferences sharedPreferences = context.getSharedPreferences(MY_SHARED_PREFERENCES,Context.MODE_PRIVATE);
 
-        return sharedPreferences.getStringSet(key,new HashSet<String>());
+        return sharedPreferences.getStringSet(key, new HashSet<>());
     }
 
     public void deleteListFavor (String key){

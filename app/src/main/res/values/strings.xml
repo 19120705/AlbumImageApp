@@ -9,6 +9,7 @@
     <string name="photo">Photo</string>
     <string name="album">Album</string>
     <string name="secret">Private</string>
+    <string name="trash">Trash</string>
     <string name="camera">Camera</string>
     <string name="settings">Setting</string>
     <string name="filter">Filter</string>

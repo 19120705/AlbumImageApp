@@ -104,7 +104,7 @@ public class CreateAlbumActivity extends AppCompatActivity{
         Set<String> imageListFavor = DataLocalManager.getListSet();
         for (MyImage img :listImageSelected){
             File imgFile = new File(img.getPath());
-            File desImgFile = new File(albumPath,albumName+"_"+imgFile.getName());
+            File desImgFile = new File(albumPath,albumName+"_" + imgFile.getName());
             imgFile.renameTo(desImgFile);
             imgFile.deleteOnExit();
             paths[i] = desImgFile.getPath();
@@ -118,6 +118,5 @@ public class CreateAlbumActivity extends AppCompatActivity{
             }
         }
         DataLocalManager.setListImg(imageListFavor);
-        MediaScannerConnection.scanFile(getApplicationContext(),paths, null, null);
     }
 }
