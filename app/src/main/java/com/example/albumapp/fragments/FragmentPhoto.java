@@ -19,8 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.albumapp.adapters.CategoryAdapter;
 import com.example.albumapp.adapters.ImageAdapter;
 import com.example.albumapp.R;
+import com.example.albumapp.models.MyCategory;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.utility.GetAllPhotoFromDisk;
 
@@ -29,7 +31,9 @@ import java.util.List;
 
 public class FragmentPhoto extends Fragment {
     private RecyclerView recyclerView;
+    private CategoryAdapter categoryAdapter;
     private ImageView imageView;
+    private List<MyImage> listImages;
     private androidx.appcompat.widget.Toolbar toolbar_photo;
 
     private Context context;
@@ -60,9 +64,11 @@ public class FragmentPhoto extends Fragment {
 
     private void setupRecyclerView() {
 //        // Thiết lập RecyclerView với Adapter
-        List<MyImage> images = GetAllPhotoFromDisk.getImages(getContext());
-        ImageAdapter adapter = new ImageAdapter(context, getListImagePaths(images));
-        recyclerView.setAdapter(adapter);
+        categoryAdapter = new CategoryAdapter(getContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        categoryAdapter.setListCategories(getListCategory());
+        recyclerView.setAdapter(categoryAdapter);
     }
 
     private List<String> getListImagePaths(List<MyImage> images) {
@@ -71,5 +77,28 @@ public class FragmentPhoto extends Fragment {
             listPath.add(images.get(i).getPath());
         }
         return listPath;
+    }
+
+    @NonNull
+    private List<MyCategory> getListCategory() {
+        List<MyCategory> categoryList = new ArrayList<>();
+        int categoryCount = 0;
+        listImages = GetAllPhotoFromDisk.getImages(getContext());
+
+        try {
+            categoryList.add(new MyCategory(listImages.get(0).getDateTaken(), new ArrayList<>()));
+            categoryList.get(categoryCount).addItemToListImages(listImages.get(0));
+            for (int i = 1; i < listImages.size(); i++) {
+                if (!listImages.get(i).getDateTaken().equals(listImages.get(i - 1).getDateTaken())) {
+                    categoryList.add(new MyCategory(listImages.get(i).getDateTaken(), new ArrayList<>()));
+                    categoryCount++;
+                }
+                categoryList.get(categoryCount).addItemToListImages(listImages.get(i));
+            }
+            return categoryList;
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 }

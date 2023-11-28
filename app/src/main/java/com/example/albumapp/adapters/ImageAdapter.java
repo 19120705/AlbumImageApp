@@ -1,12 +1,16 @@
 package com.example.albumapp.adapters;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,18 +20,33 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.albumapp.R;
+import com.example.albumapp.activities.PhotoActivity;
+import com.example.albumapp.models.MyCategory;
+import com.example.albumapp.models.MyImage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context context;
-    private List<String> imageUris;
+    private List<MyCategory> listCategories;
+    private List<MyImage> listImages;
 
-    public ImageAdapter(Context context, List<String> imageUris) {
+    private Intent intent;
+    private ArrayList<String> listPath;
+    private ArrayList<String> listThumb;
+
+    public ImageAdapter(Context context) {
         this.context = context;
-        this.imageUris = imageUris;
     }
 
+    public void setListCategory(List<MyCategory> listCategory) {
+        this.listCategories = listCategory;
+    }
+    public void setListImages(List<MyImage> listImages) {
+        this.listImages = listImages;
+        notifyDataSetChanged();
+    }
     @Override
     public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_item, parent, false);
@@ -35,10 +54,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     }
 
     @Override
-    public void onBindViewHolder(ImageViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ImageViewHolder holder, @SuppressLint("RecyclerView")int position) {
         Glide.with(context)
-                .load(imageUris.get(position))
-                .override(1000, 1000)
+                .load(listImages.get(position).getThumb())
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -52,11 +70,23 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                     }
                 })
                 .into(holder.imageView);
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent = new Intent(context, PhotoActivity.class);
+                MyAsyncTask myAsyncTask = new MyAsyncTask();
+                myAsyncTask.setPos(position);
+                myAsyncTask.execute();
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return imageUris.size();
+        if (listImages != null)
+            return listImages.size();
+        return 0;
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {
@@ -67,4 +97,37 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             imageView = itemView.findViewById(R.id.image_item_imageView);
         }
     }
+
+    public class MyAsyncTask extends AsyncTask<Void, Integer, Void> {
+        public int pos;
+
+        public void setPos(int pos) {
+            this.pos = pos;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            listPath = new ArrayList<>();
+            listThumb = new ArrayList<>();
+            for(int i = 0;i<listCategories.size();i++) {
+                List<MyImage> listImages = listCategories.get(i).getListImages();
+                for (int j = 0; j < listImages.size(); j++) {
+                    listPath.add(listImages.get(j).getPath());
+                    listThumb.add(listImages.get(j).getThumb());
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+            intent.putStringArrayListExtra("data_list_path", listPath);
+            intent.putStringArrayListExtra("data_list_thumb", listThumb);
+            intent.putExtra("pos", listPath.indexOf(listImages.get(pos).getPath()));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+    }
+
 }

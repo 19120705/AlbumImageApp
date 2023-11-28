@@ -2,12 +2,17 @@ package com.example.albumapp.utility;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.example.albumapp.models.MyImage;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class GetAllPhotoFromDisk {
@@ -23,6 +28,8 @@ public class GetAllPhotoFromDisk {
         // Chỉ lấy các cột mà chúng ta quan tâm
         String[] projection = new String[] {
                 MediaStore.Images.Media.DATA,
+                MediaStore.Images.Media.DATE_TAKEN,
+                MediaStore.Images.Media._ID
         };
 
         // Sắp xếp theo ngày thêm vào
@@ -33,13 +40,39 @@ public class GetAllPhotoFromDisk {
 
         // Lấy chỉ số của cột chúng ta quan tâm
         int dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        int dateIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN);
+        int thumb = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA);
 
         List<MyImage> listImage = new ArrayList<>();
+        Calendar myCal = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd-MM-yyyy");
 
         while (cursor.moveToNext()) {
             // Lấy đường dẫn của hình ảnh
             String data = cursor.getString(dataIndex);
-            listImage.add(new MyImage(data));
+            MyImage image = new MyImage(data);
+
+            Long dateTaken =cursor.getLong(dateIndex);
+            myCal.setTimeInMillis(dateTaken);
+
+            String dateText = formatter.format(myCal.getTime());
+            String thumbnail = cursor.getString(thumb);
+            String make = null;
+            try {
+                ExifInterface exif = new ExifInterface(data);
+                make = exif.getAttribute(ExifInterface.TAG_MAKE);
+                if (make == null) {
+                    make = "No Information";
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            image.setDateTaken(dateText);
+            image.setThumb(thumbnail);
+            image.setMake(make);
+
+            listImage.add(image);
         }
 
         cursor.close();

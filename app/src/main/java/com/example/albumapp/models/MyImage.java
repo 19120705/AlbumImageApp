@@ -4,6 +4,7 @@ public class MyImage {
     private String path;
     private String thumb;
     private String dateTaken;
+    private String make; //Trường lưu thông tin máy ảnh
     public String getPath() {
         return path;
     }
@@ -34,4 +35,13 @@ public class MyImage {
     public void setDateTaken(String dateTaken) {
         this.dateTaken = dateTaken;
     }
+
+    public String getMake() {
+        return make;
+    }
+
+    public void setMake(String make) {
+        this.make = make;
+    }
+
 }
