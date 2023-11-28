@@ -12,13 +12,14 @@
         android:icon="@drawable/ic_photo_library"
         android:iconTint="?attr/colorOnBackground"/>
 
-    <item android:id="@+id/secret"
-        android:title="@string/secret"
-        android:icon="@drawable/ic_private"
-        android:iconTint="?attr/colorOnBackground" />
-
     <item android:id="@+id/favorite"
         android:title="@string/favorite"
         android:icon="@drawable/ic_grade"
         android:iconTint="?attr/colorOnBackground"/>
+
+    <item
+        android:id="@+id/trash"
+        android:icon="@drawable/ic_trash"
+        android:iconTint="?attr/colorOnBackground"
+        android:title="@string/trash" />
 </menu>

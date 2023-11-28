@@ -10,7 +10,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.albumapp.fragments.FragmentAlbum;
 import com.example.albumapp.fragments.FragmentAlbumFavorite;
-import com.example.albumapp.fragments.FragmentAlbumPrivate;
+import com.example.albumapp.fragments.FragmentTrash;
 import com.example.albumapp.fragments.FragmentPhoto;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
@@ -36,7 +36,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 1:
                 return new FragmentAlbum();
             case 2:
-                return new FragmentAlbumPrivate();
+                return new FragmentTrash();
             case 3:
                 return new FragmentAlbumFavorite();
             default:
