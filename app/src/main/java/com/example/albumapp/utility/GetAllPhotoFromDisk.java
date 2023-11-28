@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.example.albumapp.models.MyImage;
 
@@ -29,7 +30,8 @@ public class GetAllPhotoFromDisk {
         String[] projection = new String[] {
                 MediaStore.Images.Media.DATA,
                 MediaStore.Images.Media.DATE_TAKEN,
-                MediaStore.Images.Media._ID
+                MediaStore.Images.Media.DATE_ADDED,
+                MediaStore.Images.Media._ID,
         };
 
         // Sắp xếp theo ngày thêm vào
@@ -41,6 +43,7 @@ public class GetAllPhotoFromDisk {
         // Lấy chỉ số của cột chúng ta quan tâm
         int dataIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         int dateIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_TAKEN);
+        int dateAddIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_ADDED);
         int thumb = cursor.getColumnIndexOrThrow(MediaStore.Images.Thumbnails.DATA);
 
         List<MyImage> listImage = new ArrayList<>();
@@ -53,6 +56,12 @@ public class GetAllPhotoFromDisk {
             MyImage image = new MyImage(data);
 
             Long dateTaken =cursor.getLong(dateIndex);
+            if (dateTaken == 0) {
+                dateTaken = cursor.getLong(dateAddIndex);
+            }
+            if (dateTaken < 10000000000L) {
+                dateTaken *= 1000;
+            }
             myCal.setTimeInMillis(dateTaken);
 
             String dateText = formatter.format(myCal.getTime());
@@ -76,6 +85,7 @@ public class GetAllPhotoFromDisk {
         }
 
         cursor.close();
+
 
         return listImage;
     }

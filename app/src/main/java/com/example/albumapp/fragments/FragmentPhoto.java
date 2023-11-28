@@ -85,6 +85,7 @@ public class FragmentPhoto extends Fragment {
         int categoryCount = 0;
         listImages = GetAllPhotoFromDisk.getImages(getContext());
 
+
         try {
             categoryList.add(new MyCategory(listImages.get(0).getDateTaken(), new ArrayList<>()));
             categoryList.get(categoryCount).addItemToListImages(listImages.get(0));
@@ -95,6 +96,11 @@ public class FragmentPhoto extends Fragment {
                 }
                 categoryList.get(categoryCount).addItemToListImages(listImages.get(i));
             }
+            for(int i = 0; i< categoryCount; i++)
+            {
+                Log.e("Size list image", "categoriesCount "+i+":"+categoryList.get(i).getListImages().size() );
+            }
+            Log.e("Size list image", "categoriesList: "+categoryList.size() );
             return categoryList;
         } catch (Exception e) {
             return null;
