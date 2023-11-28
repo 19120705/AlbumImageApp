@@ -44,4 +44,9 @@ public class MyImage {
         this.make = make;
     }
 
+    public String getName() {
+        String[] _array = getPath().split("/");
+        return _array[_array.length - 1];
+    }
+
 }

@@ -3,6 +3,7 @@ package com.example.albumapp.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,10 +23,12 @@ import com.example.albumapp.adapters.AlbumAdapter;
 import com.example.albumapp.models.MyAlbum;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.R;
+import com.example.albumapp.utility.DataLocalManager;
 import com.example.albumapp.utility.GetAllPhotoFromDisk;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FragmentAlbum extends Fragment {
     private static final int REQUEST_CODE_CREATE = 100;
@@ -43,9 +46,13 @@ public class FragmentAlbum extends Fragment {
         toolbar_album = view.findViewById(R.id.toolbar_album);
         recyclerView = view.findViewById(R.id.recyclerViewAlbum);
         setViewRyc();
-        albumAdapter.setData(listAlbum);
         createToolBar();
         return view;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        albumAdapter.setData(listAlbum);
     }
     private void setViewRyc() {
         recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
@@ -60,7 +67,7 @@ public class FragmentAlbum extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 int id = item.getItemId();
                 if (id == R.id.menuSearch) {
-                    //eventSearch(item);
+                    eventSearch(item);
                 }
                 else if (id == R.id.menuAdd) {
                     openCreateAlbumActivity();
@@ -70,24 +77,29 @@ public class FragmentAlbum extends Fragment {
         });
     }
     private List<MyAlbum> getListAlbum(List<MyImage> listImage) {
-        List<String> ref = new ArrayList<>();
-        List<MyAlbum> listAlbum = new ArrayList<>();
+        List<String> listAlbumName = DataLocalManager.getAllKey();
+        List<MyAlbum> allAlbum = new ArrayList<>();
 
-        for (int i = 0; i < listImage.size(); i++) {
-            String[] _array = listImage.get(i).getPath().split("/");
-            String _pathFolder = listImage.get(i).getPath().substring(0, listImage.get(i).getPath().lastIndexOf("/"));
-            String _name = _array[_array.length - 2];
-            if (!ref.contains(_pathFolder)) {
-                ref.add(_pathFolder);
-                MyAlbum token = new MyAlbum(listImage.get(i), _name);
-                token.setPathFolder(_pathFolder);
-                token.addItem(listImage.get(i));
-                listAlbum.add(token);
-            } else {
-                listAlbum.get(ref.indexOf(_pathFolder)).addItem(listImage.get(i));
-            }
+        if(!listImage.isEmpty()) {
+            MyAlbum token = new MyAlbum(listImage, "Pictures");
+            allAlbum.add(token);
         }
-        return listAlbum;
+
+        for (int i = 0; i < listAlbumName.size(); i++) {
+            List<String> listImgPath = DataLocalManager.getListImg(listAlbumName.get(i));
+            List<MyImage> listImgAlbum = new ArrayList<>();
+            for (int j = 0; j < listImgPath.size(); j++) {
+                for (int k = 0; k < listImage.size(); k++) {
+                    if (Objects.equals(listImage.get(k).getPath(), listImgPath.get(j))) {
+                        listImgAlbum.add(listImage.get(k));
+                    }
+                }
+            }
+
+            MyAlbum token = new MyAlbum(listImgAlbum, listAlbumName.get(i));
+            allAlbum.add(token);
+        }
+        return allAlbum;
     }
     private void eventSearch(@NonNull MenuItem item) {
         SearchView searchView = (SearchView) item.getActionView();

@@ -34,7 +34,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
     public void setData(List<MyAlbum> mListAlbums) {
         this.mListAlbums = mListAlbums;
-        //notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     @Override
@@ -71,7 +71,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         }
 
         public void onBind(MyAlbum ref, int pos) {
-            //bindData(ref);
+            bindData(ref);
 
 //            img_album.setOnClickListener(new View.OnClickListener() {
 //                @Override
@@ -90,7 +90,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 //                    context.startActivity(intent);
 //                }
 //            });
-
+//
 //            img_album.setOnLongClickListener(new View.OnLongClickListener() {
 //                @Override
 //                public boolean onLongClick(View view) {
@@ -117,14 +117,14 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 //                    return true;
 //                }
 //            });
-//
-//        }
-//
-//        private void bindData(MyAlbum ref) {
-//            txtName_album.setText(ref.getName());
-//            txtCount_item_album.setText(String.valueOf(ref.getList().size()) + " items");
-//            Glide.with(context).load(ref.getImg().getThumb()).into(img_album);
-//        }
+
+        }
+
+        private void bindData(MyAlbum ref) {
+            txtName_album.setText(ref.getName());
+            txtCount_item_album.setText(Integer.toString(ref.getList().size() + 1) + " items");
+            Glide.with(context).load(ref.getImg().getPath()).into(img_album);
+
 //
 //        private void slideShowEvents(@NonNull MyAlbum ref) {
 //            Intent intent = new Intent(context, SlideShowActivity.class);

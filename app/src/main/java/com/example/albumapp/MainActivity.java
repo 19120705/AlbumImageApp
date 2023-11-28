@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.example.albumapp.R;
 import com.example.albumapp.adapters.ViewPagerAdapter;
+import com.example.albumapp.utility.DataLocalManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Nếu đã có quyền, tải hình ảnh từ bộ nhớ ngoại vi
             setUpViewPager();
+            DataLocalManager.init(getApplicationContext());
+
         }
 
 

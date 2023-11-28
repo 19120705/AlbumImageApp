@@ -8,18 +8,11 @@ public class MyAlbum {
     private MyImage img;
     private String name;
     private List<MyImage> listImage;
-    public MyAlbum(MyImage img, String name) {
+    public MyAlbum(List<MyImage> listImg, String name) {
         this.name = name;
-        this.img = img;
-        listImage = new ArrayList<>();
-    }
-
-    public void setPathFolder(String pathFolder) {
-        this.pathFolder = pathFolder;
-    }
-
-    public String getPathFolder() {
-        return pathFolder;
+        listImage = listImg;
+        int random = (int)(Math.random() * listImage.size());
+        this.img = listImg.get(random);
     }
 
     public MyImage getImg() {
@@ -31,10 +24,7 @@ public class MyAlbum {
     public List<MyImage> getList() {
         return listImage;
     }
-    public void addList(List<MyImage> list) {
-        listImage = new ArrayList<>(list);
-    }
-    public void addItem(MyImage img) {
+    public void setItem(MyImage img) {
         listImage.add(img);
     }
 }

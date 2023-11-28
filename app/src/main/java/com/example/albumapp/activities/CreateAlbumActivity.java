@@ -1,10 +1,7 @@
 package com.example.albumapp.activities;
 
-import android.media.MediaScannerConnection;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,13 +13,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.albumapp.R;
-import com.example.albumapp.activities.data_favor.DataLocalManager;
+import com.example.albumapp.utility.DataLocalManager;
 import com.example.albumapp.adapters.ImageSelectAdapter;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.utility.GetAllPhotoFromDisk;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -58,11 +55,16 @@ public class CreateAlbumActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 if(!TextUtils.isEmpty(edtTitleAlbum.getText())) {
-                    if(edtTitleAlbum.getText().toString().contains("#")) {
+                    String albumName = edtTitleAlbum.getText().toString();
+                    List<String> allAlbumName = DataLocalManager.getAllKey();
+                    if(albumName.contains("#")) {
                         Toast.makeText(getApplicationContext(), "Không được chứa kí tự #", Toast.LENGTH_SHORT).show();
                     }
+                    else if (allAlbumName.contains(albumName)) {
+                        Toast.makeText(getApplicationContext(), "Album này đã tồn tại", Toast.LENGTH_SHORT).show();
+                    }
                     else {
-                        createAlbum();
+                        createAlbum(albumName);
                     }
                 }
                 else{
@@ -87,36 +89,15 @@ public class CreateAlbumActivity extends AppCompatActivity{
         rycAddAlbum = findViewById(R.id.rycAddAlbum);
     }
 
-    private void createAlbum() {
-        String albumName = edtTitleAlbum.getText().toString();
-        String albumPath = Environment.getExternalStorageDirectory()+ File.separator+"Pictures" + File.separator +albumName;
-        File directtory = new File(albumPath);
-        if(!directtory.exists()){
-            directtory.mkdirs();
-            Log.e("File-no-exist",directtory.getPath());
-        }
+    private void createAlbum(String name) {
         ImageSelectAdapter adapter = (ImageSelectAdapter) rycAddAlbum.getAdapter();
         if (adapter!=null) {
             listImageSelected = adapter.getListSelectedImage();
         }
-        String[] paths = new String[listImageSelected.size()];
-        int i =0;
-        Set<String> imageListFavor = DataLocalManager.getListSet();
+        Set<String> imageListFavor = new HashSet<>();
         for (MyImage img :listImageSelected){
-            File imgFile = new File(img.getPath());
-            File desImgFile = new File(albumPath,albumName+"_" + imgFile.getName());
-            imgFile.renameTo(desImgFile);
-            imgFile.deleteOnExit();
-            paths[i] = desImgFile.getPath();
-            i++;
-            for (String imgFavor: imageListFavor){
-                if(imgFavor.equals(imgFile.getPath())){
-                    imageListFavor.remove(imgFile.getPath());
-                    imageListFavor.add(desImgFile.getPath());
-                    break;
-                }
-            }
+            imageListFavor.add(img.getPath());
         }
-        DataLocalManager.setListImg(imageListFavor);
+        DataLocalManager.setListImg(name, imageListFavor);
     }
 }
