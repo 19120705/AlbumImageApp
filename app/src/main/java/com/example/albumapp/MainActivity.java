@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
             // Nếu đã có quyền, tải hình ảnh từ bộ nhớ ngoại vi
             setUpViewPager();
             DataLocalManager.init(getApplicationContext());
-
         }
 
 

@@ -86,7 +86,7 @@ public class FragmentAlbum extends Fragment {
         }
 
         for (int i = 0; i < listAlbumName.size(); i++) {
-            List<String> listImgPath = DataLocalManager.getListImg(listAlbumName.get(i));
+            List<String> listImgPath = DataLocalManager.getInstance().getListImg(listAlbumName.get(i));
             List<MyImage> listImgAlbum = new ArrayList<>();
             for (int j = 0; j < listImgPath.size(); j++) {
                 for (int k = 0; k < listImage.size(); k++) {
@@ -107,6 +107,13 @@ public class FragmentAlbum extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+
                 List<MyAlbum> lisAlbumSearch = new ArrayList<>();
 
                 for (MyAlbum album : listAlbum) {
@@ -114,20 +121,7 @@ public class FragmentAlbum extends Fragment {
                         lisAlbumSearch.add(album);
                     }
                 }
-
-                if (lisAlbumSearch.size() != 0) {
-                    albumAdapter.setData(lisAlbumSearch);
-                    synchronized (FragmentAlbum.this) {
-                        FragmentAlbum.this.notifyAll();
-                    }
-                } else {
-                    Toast.makeText(getContext(), "Searched album not found", Toast.LENGTH_LONG).show();
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
+                albumAdapter.setData(lisAlbumSearch);
                 return false;
             }
         });

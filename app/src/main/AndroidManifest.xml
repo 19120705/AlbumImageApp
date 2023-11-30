@@ -37,6 +37,9 @@
         <activity
             android:name=".activities.CreateAlbumActivity">
         </activity>
+        <activity
+            android:name=".activities.ItemAlbumActivity">
+        </activity>
     </application>
 
 </manifest>
