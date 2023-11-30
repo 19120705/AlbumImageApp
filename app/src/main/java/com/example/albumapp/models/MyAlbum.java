@@ -1,11 +1,9 @@
 package com.example.albumapp.models;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MyAlbum {
-    private String pathFolder;
-    private MyImage img;
+    private MyImage image;
     private String name;
     private List<MyImage> listImage;
     public MyAlbum(List<MyImage> listImg, String name) {
@@ -13,20 +11,20 @@ public class MyAlbum {
         listImage = listImg;
         if (!listImage.isEmpty()) {
             int random = (int) (Math.random() * listImage.size());
-            this.img = listImg.get(random);
+            this.image = listImg.get(random);
         }
     }
 
-    public MyImage getImg() {
-        return img;
+    public MyImage getImage() {
+        return image;
     }
     public String getName() {
         return name;
     }
-    public List<MyImage> getList() {
+    public List<MyImage> getListImage() {
         return listImage;
     }
-    public void setItem(MyImage img) {
+    public void addItem(MyImage img) {
         listImage.add(img);
     }
 }

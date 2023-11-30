@@ -13,20 +13,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.albumapp.R;
 import com.example.albumapp.adapters.ItemAlbumAdapter;
+import com.example.albumapp.models.MyImage;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemAlbumActivity extends AppCompatActivity {
-    private ArrayList<String> myAlbum;
-    private String path_folder ;
-    private RecyclerView ryc_album;
-    private RecyclerView ryc_list_album;
+    private List<MyImage> dataImages;
+    private RecyclerView recyclerView;
     private Intent intent;
     private String album_name;
     Toolbar toolbar_item_album;
@@ -44,9 +42,11 @@ public class ItemAlbumActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_album);
+
+        recyclerView = findViewById(R.id.ryc_list_image);
+        toolbar_item_album = findViewById(R.id.toolbar_item_album);
         intent = getIntent();
         setUpSpanCount();
-        mappingControls();
         setData();
         setRyc();
         events();
@@ -62,9 +62,9 @@ public class ItemAlbumActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_ADD) {
-            ArrayList<String> resultList = data.getStringArrayListExtra("list_result");
+            List<MyImage> resultList = data.getParcelableArrayListExtra("list_result");
             if(resultList !=null) {
-                myAlbum.addAll(resultList);
+                dataImages.addAll(resultList);
                 spanAction();
             }
         }
@@ -74,7 +74,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
                 if (isMoved == 1) {
                     ArrayList<String> resultList = data.getStringArrayListExtra("list_result");
                     if (resultList != null) {
-                        myAlbum.remove(resultList);
+                        dataImages.remove(resultList);
                         spanAction();
                     }
                 }
@@ -87,10 +87,10 @@ public class ItemAlbumActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_PIC) {
             String path_img = data.getStringExtra("path_img");
             if(isSecret == 1) {
-                myAlbum.remove(path_img);
+                dataImages.remove(path_img);
                 spanAction();
             }else if (duplicateImg == 2){
-                myAlbum.remove(path_img);
+                dataImages.remove(path_img);
                 spanAction();
             }
         }
@@ -104,38 +104,38 @@ public class ItemAlbumActivity extends AppCompatActivity {
 //            ryc_list_album.setAdapter(new ItemAlbumAdapter2(myAlbum));
 //        }
 //        else{
-            ryc_list_album.setAdapter(new ItemAlbumAdapter(myAlbum));
+            recyclerView.setAdapter(new ItemAlbumAdapter(dataImages));
 //        }
     }
 
     private void setRyc() {
         album_name = intent.getStringExtra("name");
-        ryc_list_album.setLayoutManager(new GridLayoutManager(this, spanCount));
-        itemAlbumAdapter = new ItemAlbumAdapter(myAlbum);
-        if(spanCount == 1)
+        recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
+        itemAlbumAdapter = new ItemAlbumAdapter(dataImages);
+//        if(spanCount == 1)
 //            ryc_list_album.setAdapter(new ItemAlbumAdapter3(myAlbum));
 //        else if(spanCount == 2)
 //            ryc_list_album.setAdapter(new ItemAlbumAdapter2(myAlbum));
 //        else
-            ryc_list_album.setAdapter(new ItemAlbumAdapter(myAlbum));
+            recyclerView.setAdapter(new ItemAlbumAdapter(dataImages));
     }
 
     private void animationRyc() {
         switch(spanCount) {
             case 1:
                 Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.anim_layout_ryc_1);
-                ryc_list_album.setAnimation(animation1);
+                recyclerView.setAnimation(animation1);
             case 2:
                 Animation animation2 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_layout_ryc_1);
-                ryc_list_album.setAnimation(animation2);
+                recyclerView.setAnimation(animation2);
                 break;
             case 3:
                 Animation animation3 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_layout_ryc_2);
-                ryc_list_album.setAnimation(animation3);
+                recyclerView.setAnimation(animation3);
                 break;
             case 4:
                 Animation animation4 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.anim_layout_ryc_3);
-                ryc_list_album.setAnimation(animation4);
+                recyclerView.setAnimation(animation4);
                 break;
         }
     }
@@ -145,10 +145,10 @@ public class ItemAlbumActivity extends AppCompatActivity {
         // Toolbar events
         toolbar_item_album.inflateMenu(R.menu.menu_top_item_album);
         toolbar_item_album.setTitle(album_name);
-        if(isAlbum == 0) {
-            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(false);
-        } else
-            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(true);
+//        if(isAlbum == 0) {
+//            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(false);
+//        } else
+//            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(true);
         // Show back button
         toolbar_item_album.setNavigationIcon(R.drawable.ic_back);
         toolbar_item_album.setNavigationOnClickListener(new View.OnClickListener() {
@@ -191,31 +191,31 @@ public class ItemAlbumActivity extends AppCompatActivity {
     }
 
     private void spanCountEvent() {
-        if(spanCount == 1){
+//        if(spanCount == 1){
 //            spanCount++;
 //            ryc_list_album.setLayoutManager(new GridLayoutManager(this, spanCount));
 //            ryc_list_album.setAdapter(itemAlbumAdapter2);
-        }
+//        }
 
-        else if(spanCount < 4 && spanCount > 1) {
+//        else if(spanCount < 4 && spanCount > 1) {
             spanCount++;
-            ryc_list_album.setLayoutManager(new GridLayoutManager(this, spanCount));
-            ryc_list_album.setAdapter(itemAlbumAdapter);
-        }
-        else if(spanCount == 4) {
+            recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
+            recyclerView.setAdapter(itemAlbumAdapter);
+//        }
+//        else if(spanCount == 4) {
 
 //            spanCount = 1;
 //            ryc_list_album.setLayoutManager(new LinearLayoutManager(this));
 //            ryc_list_album.setAdapter(itemAlbumAdapter3);
 
-        }
+//        }
 
 
         animationRyc();
-        SharedPreferences sharedPref = getSharedPreferences("MyPreferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("span_count", spanCount);
-        editor.commit();
+//        SharedPreferences sharedPref = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putInt("span_count", spanCount);
+//        editor.commit();
     }
 
 //    private void slideShowEvents() {
@@ -227,8 +227,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
 //    }
 
     private void setData() {
-        myAlbum = intent.getStringArrayListExtra("data");
-        path_folder = intent.getStringExtra("path_folder");
+        dataImages = intent.getParcelableArrayListExtra("data");
         isSecret = intent.getIntExtra("isSecret", 0);
         duplicateImg = intent.getIntExtra("duplicateImg",0);
 //        itemAlbumAdapter2 = new ItemAlbumAdapter2(myAlbum);
@@ -250,10 +249,6 @@ public class ItemAlbumActivity extends AppCompatActivity {
 //        myAsyncTask.execute();
     }
 
-    private void mappingControls() {
-        ryc_list_album = findViewById(R.id.ryc_list_album);
-        toolbar_item_album = findViewById(R.id.toolbar_item_album);
-    }
 
 //    public class MyAsyncTask extends AsyncTaskExecutorService<Void, Integer, Void> {
 //

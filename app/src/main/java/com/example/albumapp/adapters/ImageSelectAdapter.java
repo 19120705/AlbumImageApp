@@ -56,7 +56,7 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
 
         // set ảnh cho imgPhoto bằng thư viện Glide
         Glide.with(context)
-                .load(listImages.get(position).getPath())
+                .load(listImages.get(position).getThumb())
                 .override(1000, 1000)
                 .into(holder.imgPhoto);
 

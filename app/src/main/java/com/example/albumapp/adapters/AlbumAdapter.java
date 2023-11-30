@@ -2,14 +2,12 @@ package com.example.albumapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,9 +16,8 @@ import com.bumptech.glide.Glide;
 import com.example.albumapp.R;
 import com.example.albumapp.activities.ItemAlbumActivity;
 import com.example.albumapp.models.MyAlbum;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.example.albumapp.models.MyImage;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,12 +74,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ItemAlbumActivity.class);
-                    ArrayList<String> list = new ArrayList<>();
-                    for(int i=0;i<ref.getList().size();i++) {
-                        list.add(ref.getList().get(i).getThumb());
-                    }
+                    ArrayList<MyImage> list = new ArrayList<>(ref.getListImage());
 
-                    intent.putStringArrayListExtra("data", list);
+                    intent.putParcelableArrayListExtra("data", list);
                     intent.putExtra("name", ref.getName());
                     intent.putExtra("ok", 1);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -121,9 +115,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
         private void bindData(MyAlbum ref) {
             txtName_album.setText(ref.getName());
-            txtCount_item_album.setText(Integer.toString(ref.getList().size()) + " items");
-            if (ref.getImg()!=null) {
-                Glide.with(context).load(ref.getImg().getPath()).into(img_album);
+            txtCount_item_album.setText(Integer.toString(ref.getListImage().size()) + " items");
+            if (ref.getImage()!=null) {
+                Glide.with(context).load(ref.getImage().getThumb()).into(img_album);
             }
 
 //

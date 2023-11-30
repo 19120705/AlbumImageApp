@@ -1,9 +1,7 @@
 package com.example.albumapp.adapters;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,21 +12,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.albumapp.R;
+import com.example.albumapp.models.MyImage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.ItemAlbumViewHolder> {
-    private ArrayList<String> album;
+    private List<MyImage> listImages;
     private ImageView imgPhoto;
     private static int REQUEST_CODE_PIC = 10;
 
-    public ItemAlbumAdapter(ArrayList<String> album) {
-        this.album = album;
+    public ItemAlbumAdapter(List<MyImage> list) {
+        this.listImages = list;
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(ArrayList<String> album) {
-        this.album = album;
+    public void setData(List<MyImage> list) {
+        this.listImages = list;
         notifyDataSetChanged();
     }
 
@@ -42,12 +42,12 @@ public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.Item
 
     @Override
     public void onBindViewHolder(@NonNull ItemAlbumViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.onBind(album.get(position), position);
+        holder.onBind(listImages.get(position), position);
     }
 
     @Override
     public int getItemCount() {
-        return album.size();
+        return listImages.size();
     }
 
     public class ItemAlbumViewHolder extends RecyclerView.ViewHolder {
@@ -59,9 +59,9 @@ public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.Item
             imgPhoto = itemView.findViewById(R.id.imgPhoto);
         }
 
-        public void onBind(String img, int pos) {
+        public void onBind(MyImage image, int pos) {
             // set ảnh cho imgPhoto bằng thư viện Glide
-            Glide.with(context).load(img).into(imgPhoto);
+            Glide.with(context).load(image.getThumb()).into(imgPhoto);
 //            imgPhoto.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
