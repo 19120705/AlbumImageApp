@@ -15,4 +15,6 @@
     <string name="filter">Filter</string>
     <string name="create_album">Create Album</string>
     <string name="add_title">Add Title</string>
+    <string name="slide_show">Slide Show</string>
+    <string name="add_image">Add Image</string>
 </resources>

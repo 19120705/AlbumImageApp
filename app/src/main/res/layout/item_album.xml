@@ -22,10 +22,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:scaleType="centerCrop"/>
-<!--                android:src="@drawable/anh1"-->
-<!--                android:focusable="true"-->
-<!--                android:clickable="true"-->
-<!--                android:foreground="?android:attr/selectableItemBackgroundBorderless"/>-->
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

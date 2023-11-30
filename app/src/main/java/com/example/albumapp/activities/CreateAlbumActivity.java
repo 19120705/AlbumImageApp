@@ -94,10 +94,15 @@ public class CreateAlbumActivity extends AppCompatActivity{
         if (adapter!=null) {
             listImageSelected = adapter.getListSelectedImage();
         }
+         if (listImageSelected.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Chọn một bức ảnh", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Set<String> imageListFavor = new HashSet<>();
         for (MyImage img :listImageSelected){
             imageListFavor.add(img.getPath());
         }
-        DataLocalManager.setListImg(name, imageListFavor);
+        DataLocalManager.getInstance().setListImg(name, imageListFavor);
+        finish();
     }
 }

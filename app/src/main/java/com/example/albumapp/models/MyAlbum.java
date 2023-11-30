@@ -11,8 +11,10 @@ public class MyAlbum {
     public MyAlbum(List<MyImage> listImg, String name) {
         this.name = name;
         listImage = listImg;
-        int random = (int)(Math.random() * listImage.size());
-        this.img = listImg.get(random);
+        if (!listImage.isEmpty()) {
+            int random = (int) (Math.random() * listImage.size());
+            this.img = listImg.get(random);
+        }
     }
 
     public MyImage getImg() {
