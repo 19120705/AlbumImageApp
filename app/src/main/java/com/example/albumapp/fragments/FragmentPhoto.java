@@ -2,6 +2,7 @@ package com.example.albumapp.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -10,12 +11,15 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -40,7 +44,9 @@ import com.example.albumapp.models.MyCategory;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.utility.GetAllPhotoFromDisk;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class FragmentPhoto extends Fragment {
@@ -51,7 +57,15 @@ public class FragmentPhoto extends Fragment {
     private androidx.appcompat.widget.Toolbar toolbar_photo;
 
     private ActivityResultLauncher<Intent> mActivityResultLauncher;
+    private ActivityResultLauncher<String> requestPermissionLauncher;
     private Context context;
+
+    private static final int CAMERA_REQUEST = 1888;
+    private static final int MY_CAMERA_PERMISSION_CODE = 100;
+    private static final int PICTURE_RESULT = 1;
+    private Uri imageUri;
+    private String imageurl;
+    private Bitmap thumbnail;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,21 +82,29 @@ public class FragmentPhoto extends Fragment {
                                 thumbnail = MediaStore.Images.Media.getBitmap(
                                         getActivity().getApplicationContext().getContentResolver(), imageUri);
 
-                                //imageurl = getRealPathFromURI(imageUri);
+                                imageurl = getRealPathFromURI(imageUri);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-
-//                            if (requestCode == REQUEST_CODE_MULTI) {
-//                                ImageAdapter.MyAsyncTask myAsyncTask = new ImageAdapter.MyAsyncTask();
-//                                myAsyncTask.execute();
-//                                Toast.makeText(context, "Your image is hidden", Toast.LENGTH_SHORT).show();
-//                            }
+                            new Thread(new MyTask(categoryAdapter)).start();
+                            Toast.makeText(context, "Your image is hidden", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
         );
+        requestPermissionLauncher =
+                registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                    if (isGranted) {
+                        Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
+                        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                        mActivityResultLauncher.launch(cameraIntent);
+                    } else {
+                        Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
+                    }
+                });
     }
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,@Nullable ViewGroup container,@Nullable Bundle
@@ -103,6 +125,16 @@ public class FragmentPhoto extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        new Thread(new MyTask(categoryAdapter)).start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
     private void setupToolBarPhoto(){
         toolbar_photo.inflateMenu(R.menu.menu_top);
@@ -145,15 +177,55 @@ public class FragmentPhoto extends Fragment {
         });
     }
 
-    public void eventSearch(@NonNull MenuItem item){}
+    private void eventSearch(@NonNull MenuItem item) {
+        final Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DATE);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                calendar.set(i, i1, i2);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                String date = simpleDateFormat.format(calendar.getTime());
+                //showImageByDate(date);
+            }
+        }, year, month, day);
+        datePickerDialog.show();
+    }
+    public String getRealPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getActivity().managedQuery(contentUri, proj, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
+    }
+    public class MyTask implements Runnable {
+        private List<MyCategory> listCategory;
+        private CategoryAdapter categoryAdapter;
+        public MyTask(CategoryAdapter categoryAdapter) {
+            this.categoryAdapter = categoryAdapter;
+        }
+        @Override
+        public void run() {
+            //doInBackground
+            listCategory = getListCategory();
+
+            // Update UI on the main thread
+            //onPostExecute
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    categoryAdapter.setListCategories(listCategory);
+                }
+            });
+        }
+    }
+
+
 
     //Camera
-    private static final int CAMERA_REQUEST = 1888;
-    private static final int MY_CAMERA_PERMISSION_CODE = 100;
-    private static final int PICTURE_RESULT = 1;
-    private Uri imageUri;
-    private String imageurl;
-    private Bitmap thumbnail;
     private void eventCamera(){
 
         // Kiểm tra quyền CAMERA
@@ -171,16 +243,7 @@ public class FragmentPhoto extends Fragment {
             mActivityResultLauncher.launch(intent);
         } else {
             // Nếu không, yêu cầu quyền CAMERA
-            ActivityResultLauncher<String> requestPermissionLauncher =
-                    registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                        if (isGranted) {
-                            Toast.makeText(getActivity(), "camera permission granted", Toast.LENGTH_LONG).show();
-                            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                            mActivityResultLauncher.launch(cameraIntent);
-                        } else {
-                            Toast.makeText(getActivity(), "camera permission denied", Toast.LENGTH_LONG).show();
-                        }
-                    });
+
             requestPermissionLauncher.launch(Manifest.permission.CAMERA);
         }
     }

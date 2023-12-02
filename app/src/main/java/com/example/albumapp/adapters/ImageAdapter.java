@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,7 +79,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                 intent = new Intent(context, PhotoActivity.class);
                 MyAsyncTask myAsyncTask = new MyAsyncTask();
                 myAsyncTask.setPos(position);
-                myAsyncTask.execute();
+                new Thread(myAsyncTask).start();
             }
         });
     }
@@ -98,7 +100,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         }
     }
 
-    public class MyAsyncTask extends AsyncTask<Void, Integer, Void> {
+
+    public class MyAsyncTask implements Runnable {
         public int pos;
 
         public void setPos(int pos) {
@@ -106,7 +109,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        public void run() {
             listPath = new ArrayList<>();
             listThumb = new ArrayList<>();
             for(int i = 0;i<listCategories.size();i++) {
@@ -116,18 +119,20 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                     listThumb.add(listImages.get(j).getThumb());
                 }
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void unused) {
-            super.onPostExecute(unused);
-            intent.putStringArrayListExtra("data_list_path", listPath);
-            intent.putStringArrayListExtra("data_list_thumb", listThumb);
-            intent.putExtra("pos", listPath.indexOf(listImages.get(pos).getPath()));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+            // Update UI on the main thread
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    intent.putStringArrayListExtra("data_list_path", listPath);
+                    intent.putStringArrayListExtra("data_list_thumb", listThumb);
+                    intent.putExtra("pos", listPath.indexOf(listImages.get(pos).getPath()));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
+
+
 
 }
