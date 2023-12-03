@@ -135,7 +135,14 @@ public class FragmentPhoto extends Fragment {
     public void onStop() {
         super.onStop();
     }
-
+    private void setupRecyclerView() {
+        // Thiết lập RecyclerView với Adapter
+        categoryAdapter = new CategoryAdapter(getContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        categoryAdapter.setListCategories(getListCategory());
+        recyclerView.setAdapter(categoryAdapter);
+    }
     private void setupToolBarPhoto(){
         toolbar_photo.inflateMenu(R.menu.menu_top);
         toolbar_photo.setTitle(getContext().getResources().getString(R.string.photo));
@@ -247,14 +254,7 @@ public class FragmentPhoto extends Fragment {
             requestPermissionLauncher.launch(Manifest.permission.CAMERA);
         }
     }
-    private void setupRecyclerView() {
-//        // Thiết lập RecyclerView với Adapter
-        categoryAdapter = new CategoryAdapter(getContext());
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        categoryAdapter.setListCategories(getListCategory());
-        recyclerView.setAdapter(categoryAdapter);
-    }
+
 
     private List<String> getListImagePaths(List<MyImage> images) {
         List<String> listPath = new ArrayList<>();
