@@ -3,12 +3,10 @@ package com.example.albumapp.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,7 +75,7 @@ public class FragmentAlbum extends Fragment {
         });
     }
     private List<MyAlbum> getListAlbum(List<MyImage> listImage) {
-        List<String> listAlbumName = DataLocalManager.getAllKey();
+        List<String> listAlbumName = DataLocalManager.getAllAlbum();
         List<MyAlbum> allAlbum = new ArrayList<>();
 
         if(!listImage.isEmpty()) {
@@ -86,7 +84,7 @@ public class FragmentAlbum extends Fragment {
         }
 
         for (int i = 0; i < listAlbumName.size(); i++) {
-            List<String> listImgPath = DataLocalManager.getInstance().getListImg(listAlbumName.get(i));
+            List<String> listImgPath = DataLocalManager.getInstance().getAlbumImages(listAlbumName.get(i));
             List<MyImage> listImgAlbum = new ArrayList<>();
             for (int j = 0; j < listImgPath.size(); j++) {
                 for (int k = 0; k < listImage.size(); k++) {

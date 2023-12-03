@@ -10,13 +10,16 @@ import java.util.Map;
 import java.util.Set;
 
 public class DataLocalManager {
-    private static final String MY_SHARED_PREFERENCES="MY_SHARED_PREFERENCES";
+    private static final String MY_ALBUM = "MY_ALBUM";
+    private static final String MY_SHARED_PREFERENCES = "MY_SHARED_PREFERENCES";
     private static DataLocalManager instance;
     private SharedPreferences sharedPreferences;
+    private SharedPreferences albumData;
 
     public static void init(Context context){
         instance = new DataLocalManager();
         instance.sharedPreferences = context.getSharedPreferences(MY_SHARED_PREFERENCES,Context.MODE_PRIVATE);
+        instance.albumData = context.getSharedPreferences(MY_ALBUM,Context.MODE_PRIVATE);
     }
 
     public static DataLocalManager getInstance(){
@@ -26,9 +29,9 @@ public class DataLocalManager {
         return instance;
     }
 
-    public void setStringSetValue(String key, Set<String> value){
-        SharedPreferences.Editor editor = instance.sharedPreferences.edit();
-        editor.putStringSet(key, value);
+    public void saveAlbum(String albumName, Set<String> images){
+        SharedPreferences.Editor editor = instance.albumData.edit();
+        editor.putStringSet(albumName, images);
         editor.apply();
     }
 
@@ -36,17 +39,12 @@ public class DataLocalManager {
         Set<String> setListImg = new HashSet<>();
 
         setListImg.addAll(listImg);
-        setStringSetValue(key,setListImg);
+        saveAlbum(key,setListImg);
 
     }
-    public void setIntegerValue(String key, int value){
-        SharedPreferences.Editor editor = instance.sharedPreferences.edit();
-        editor.putInt(key, value);
-        editor.apply();
-    }
 
-    public List<String> getListImg(String key){
-        Set<String> strJsonArray = getListSet(key);
+    public List<String> getAlbumImages(String albumName){
+        Set<String> strJsonArray = instance.albumData.getStringSet(albumName, new HashSet<>());
 
         List<String> listImg = new ArrayList<>();
 
@@ -55,16 +53,22 @@ public class DataLocalManager {
         return listImg;
     }
 
-    public Set<String> getListSet(String key){
-        return instance.sharedPreferences.getStringSet(key, new HashSet<>());
-    }
-
-    public static List<String> getAllKey() {
+    public static List<String> getAllAlbum() {
         List<String> allKey = new ArrayList<String>();
-        Map<String, ?> allEntries = instance.sharedPreferences.getAll();
+        Map<String, ?> allEntries = instance.albumData.getAll();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             allKey.add(entry.getKey());
         }
         return allKey;
+    }
+
+    public void saveSpanCount(int spanCount){
+        SharedPreferences.Editor editor = instance.sharedPreferences.edit();
+        editor.putInt("span_count", spanCount);
+        editor.apply();
+    }
+
+    public int getSpanCount(){
+        return sharedPreferences.getInt("span_count", 3);
     }
 }

@@ -43,8 +43,12 @@
         <activity
             android:name=".activities.SlideShowActivity">
         </activity>
-        <activity  android:name=".activities.PhotoActivity">
-            </activity>
+        <activity
+            android:name=".activities.PhotoActivity">
+        </activity>
+        <activity
+            android:name=".activities.AddImageToAlbumActivity">
+        </activity>
     </application>
 
 </manifest>

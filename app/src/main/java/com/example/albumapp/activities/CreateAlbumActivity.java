@@ -56,7 +56,7 @@ public class CreateAlbumActivity extends AppCompatActivity{
             public void onClick(View view) {
                 if(!TextUtils.isEmpty(edtTitleAlbum.getText())) {
                     String albumName = edtTitleAlbum.getText().toString();
-                    List<String> allAlbumName = DataLocalManager.getAllKey();
+                    List<String> allAlbumName = DataLocalManager.getAllAlbum();
                     if(albumName.contains("#")) {
                         Toast.makeText(getApplicationContext(), "Không được chứa kí tự #", Toast.LENGTH_SHORT).show();
                     }
@@ -102,7 +102,7 @@ public class CreateAlbumActivity extends AppCompatActivity{
         for (MyImage img :listImageSelected){
             imageListFavor.add(img.getPath());
         }
-        DataLocalManager.getInstance().setStringSetValue(name, imageListFavor);
+        DataLocalManager.getInstance().saveAlbum(name, imageListFavor);
         finish();
     }
 }
