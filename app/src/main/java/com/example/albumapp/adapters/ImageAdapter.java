@@ -123,8 +123,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    intent.putStringArrayListExtra("data_list_path", listPath);
-                    intent.putStringArrayListExtra("data_list_thumb", listThumb);
+                    intent.putParcelableArrayListExtra("dataImages", new ArrayList<>(listImages));
                     intent.putExtra("pos", listPath.indexOf(listImages.get(pos).getPath()));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
