@@ -17,4 +17,9 @@
     <string name="add_title">Add Title</string>
     <string name="slide_show">Slide Show</string>
     <string name="add_image">Add Image</string>
+    <string name="simple">Simple</string>
+    <string name="fade">Fade</string>
+    <string name="zoom_out">Zoom Out</string>
+    <string name="depth">Depth</string>
+    <string name="spinner">Spinner</string>
 </resources>

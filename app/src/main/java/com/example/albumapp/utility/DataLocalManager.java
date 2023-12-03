@@ -26,10 +26,9 @@ public class DataLocalManager {
         return instance;
     }
 
-    public void setListImg(String key, Set<String> listImg){
+    public void setStringSetValue(String key, Set<String> value){
         SharedPreferences.Editor editor = instance.sharedPreferences.edit();
-        editor.remove(key).apply();
-        editor.putStringSet(key,listImg);
+        editor.putStringSet(key, value);
         editor.apply();
     }
 
@@ -37,8 +36,13 @@ public class DataLocalManager {
         Set<String> setListImg = new HashSet<>();
 
         setListImg.addAll(listImg);
-        setListImg(key,setListImg);
+        setStringSetValue(key,setListImg);
 
+    }
+    public void setIntegerValue(String key, int value){
+        SharedPreferences.Editor editor = instance.sharedPreferences.edit();
+        editor.putInt(key, value);
+        editor.apply();
     }
 
     public List<String> getListImg(String key){

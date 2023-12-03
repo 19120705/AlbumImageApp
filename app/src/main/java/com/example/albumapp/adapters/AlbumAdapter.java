@@ -76,7 +76,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                     Intent intent = new Intent(context, ItemAlbumActivity.class);
                     ArrayList<MyImage> list = new ArrayList<>(ref.getListImage());
 
-                    intent.putParcelableArrayListExtra("data", list);
+                    intent.putParcelableArrayListExtra("dataImages", list);
                     intent.putExtra("name", ref.getName());
                     intent.putExtra("ok", 1);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

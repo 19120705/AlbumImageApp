@@ -102,7 +102,7 @@ public class CreateAlbumActivity extends AppCompatActivity{
         for (MyImage img :listImageSelected){
             imageListFavor.add(img.getPath());
         }
-        DataLocalManager.getInstance().setListImg(name, imageListFavor);
+        DataLocalManager.getInstance().setStringSetValue(name, imageListFavor);
         finish();
     }
 }

@@ -41,5 +41,9 @@ dependencies {
 
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
-    implementation ("androidx.recyclerview:recyclerview:1.2.1")
+    implementation ("androidx.recyclerview:recyclerview:1.3.2")
+
+//    implementation ("com.github.denzcoskun:ImageSlideshow:0.1.2")
+    implementation ("com.github.smarteist:autoimageslider:1.4.0")
+
 }
