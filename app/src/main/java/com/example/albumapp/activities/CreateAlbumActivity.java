@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Set;
 
 public class CreateAlbumActivity extends AppCompatActivity{
-    private ImageView img_back_create_album;
+    private ImageView imgBackCreateAlbum;
     private ImageView btnTick;
     private EditText edtTitleAlbum;
-    private RecyclerView rycAddAlbum;
+    private RecyclerView recyclerView;
     private List<MyImage> listImage;
     private List<MyImage> listImageSelected;
     @Override
@@ -42,7 +42,7 @@ public class CreateAlbumActivity extends AppCompatActivity{
         listImageSelected = new ArrayList<>();
     }
     private void event() {
-        img_back_create_album.setOnClickListener(new View.OnClickListener() {
+        imgBackCreateAlbum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -78,19 +78,19 @@ public class CreateAlbumActivity extends AppCompatActivity{
         listImage = GetAllPhotoFromDisk.getImages(getApplicationContext());
         ImageSelectAdapter imageAdapter = new ImageSelectAdapter(this);
         imageAdapter.setData(listImage);
-        rycAddAlbum.setLayoutManager(new GridLayoutManager(this, 4));
-        rycAddAlbum.setAdapter(imageAdapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        recyclerView.setAdapter(imageAdapter);
     }
 
     private void mappingControls() {
-        img_back_create_album = findViewById(R.id.img_back_create_album);
+        imgBackCreateAlbum = findViewById(R.id.img_back_create_album);
         btnTick = findViewById(R.id.btnTick);
         edtTitleAlbum = findViewById(R.id.edtTitleAlbum);
-        rycAddAlbum = findViewById(R.id.rycAddAlbum);
+        recyclerView = findViewById(R.id.rycAddAlbum);
     }
 
     private void createAlbum(String name) {
-        ImageSelectAdapter adapter = (ImageSelectAdapter) rycAddAlbum.getAdapter();
+        ImageSelectAdapter adapter = (ImageSelectAdapter) recyclerView.getAdapter();
         if (adapter!=null) {
             listImageSelected = adapter.getListSelectedImage();
         }
@@ -102,7 +102,7 @@ public class CreateAlbumActivity extends AppCompatActivity{
         for (MyImage img :listImageSelected){
             imageListFavor.add(img.getPath());
         }
-        DataLocalManager.getInstance().setListImg(name, imageListFavor);
+        DataLocalManager.getInstance().setStringSetValue(name, imageListFavor);
         finish();
     }
 }

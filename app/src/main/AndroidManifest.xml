@@ -41,8 +41,10 @@
             android:name=".activities.ItemAlbumActivity">
         </activity>
         <activity
-            android:name=".activities.PhotoActivity">
+            android:name=".activities.SlideShowActivity">
         </activity>
+        <activity  android:name=".activities.PhotoActivity">
+            </activity>
     </application>
 
 </manifest>

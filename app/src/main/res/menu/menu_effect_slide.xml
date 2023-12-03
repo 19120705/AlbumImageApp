@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_effect1"
+        android:title="@string/simple"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/menu_effect2"
+        android:title="@string/fade"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_effect3"
+        android:title="@string/zoom_out"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/menu_effect4"
+        android:title="@string/depth"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/menu_effect5"
+        android:title="@string/spinner"
+        app:showAsAction="never"/>
+</menu>

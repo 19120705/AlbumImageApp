@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.albumapp.R;
 import com.example.albumapp.adapters.ItemAlbumAdapter;
 import com.example.albumapp.models.MyImage;
+import com.example.albumapp.utility.DataLocalManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,8 @@ public class ItemAlbumActivity extends AppCompatActivity {
     private List<MyImage> dataImages;
     private RecyclerView recyclerView;
     private Intent intent;
-    private String album_name;
-    Toolbar toolbar_item_album;
+    private String albumName;
+    Toolbar toolbarItemAlbum;
     private ItemAlbumAdapter itemAlbumAdapter;
     private int spanCount;
     private int isSecret;
@@ -44,7 +45,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
         setContentView(R.layout.activity_item_album);
 
         recyclerView = findViewById(R.id.ryc_list_image);
-        toolbar_item_album = findViewById(R.id.toolbar_item_album);
+        toolbarItemAlbum = findViewById(R.id.toolbar_item_album);
         intent = getIntent();
         setUpSpanCount();
         setData();
@@ -65,7 +66,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
             List<MyImage> resultList = data.getParcelableArrayListExtra("list_result");
             if(resultList !=null) {
                 dataImages.addAll(resultList);
-                spanAction();
+                recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
             }
         }
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_CHOOSE) {
@@ -75,7 +76,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
                     ArrayList<String> resultList = data.getStringArrayListExtra("list_result");
                     if (resultList != null) {
                         dataImages.remove(resultList);
-                        spanAction();
+                        recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
                     }
                 }
             }
@@ -88,36 +89,18 @@ public class ItemAlbumActivity extends AppCompatActivity {
             String path_img = data.getStringExtra("path_img");
             if(isSecret == 1) {
                 dataImages.remove(path_img);
-                spanAction();
             }else if (duplicateImg == 2){
                 dataImages.remove(path_img);
-                spanAction();
             }
+            recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
         }
     }
 
-    private void spanAction() {
-//        if(spanCount == 1) {
-//            ryc_list_album.setAdapter(new ItemAlbumAdapter3(myAlbum));
-//        }
-//        else if(spanCount == 2) {
-//            ryc_list_album.setAdapter(new ItemAlbumAdapter2(myAlbum));
-//        }
-//        else{
-            recyclerView.setAdapter(new ItemAlbumAdapter(dataImages));
-//        }
-    }
-
     private void setRyc() {
-        album_name = intent.getStringExtra("name");
+        albumName = intent.getStringExtra("name");
         recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
-        itemAlbumAdapter = new ItemAlbumAdapter(dataImages);
-//        if(spanCount == 1)
-//            ryc_list_album.setAdapter(new ItemAlbumAdapter3(myAlbum));
-//        else if(spanCount == 2)
-//            ryc_list_album.setAdapter(new ItemAlbumAdapter2(myAlbum));
-//        else
-            recyclerView.setAdapter(new ItemAlbumAdapter(dataImages));
+        itemAlbumAdapter = new ItemAlbumAdapter(dataImages,  spanCount);
+        recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
     }
 
     private void animationRyc() {
@@ -143,15 +126,15 @@ public class ItemAlbumActivity extends AppCompatActivity {
 
     private void events() {
         // Toolbar events
-        toolbar_item_album.inflateMenu(R.menu.menu_top_item_album);
-        toolbar_item_album.setTitle(album_name);
+        toolbarItemAlbum.inflateMenu(R.menu.menu_top_item_album);
+        toolbarItemAlbum.setTitle(albumName);
 //        if(isAlbum == 0) {
 //            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(false);
 //        } else
 //            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(true);
         // Show back button
-        toolbar_item_album.setNavigationIcon(R.drawable.ic_back);
-        toolbar_item_album.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbarItemAlbum.setNavigationIcon(R.drawable.ic_back);
+        toolbarItemAlbum.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -159,24 +142,21 @@ public class ItemAlbumActivity extends AppCompatActivity {
         });
 
         // Toolbar options
-        toolbar_item_album.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        toolbarItemAlbum.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 if (id == R.id.change_span_count) {
                     spanCountEvent();
-//                    case R.id.album_item_slideshow:
-//                        slideShowEvents();
-//                        break;
+                }
+                else if (id == R.id.album_item_slideshow) {
+                    slideShowEvents();
 //                    case R.id.menu_add_image:
-//
 //                            Intent intent_add = new Intent(ItemAlbumActivity.this, AddImageToAlbumActivity.class);
 //                            intent_add.putStringArrayListExtra("list_image", myAlbum);
 //                            intent_add.putExtra("path_folder", path_folder);
 //                            intent_add.putExtra("name_folder", album_name);
 //                            startActivityForResult(intent_add, REQUEST_CODE_ADD);
-//
-//                        break;
                 }
 
                 return true;
@@ -187,52 +167,39 @@ public class ItemAlbumActivity extends AppCompatActivity {
     }
 
     private void hideMenu() {
-        toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(false);
+        toolbarItemAlbum.getMenu().findItem(R.id.menu_add_image).setVisible(false);
     }
 
     private void spanCountEvent() {
-//        if(spanCount == 1){
-//            spanCount++;
-//            ryc_list_album.setLayoutManager(new GridLayoutManager(this, spanCount));
-//            ryc_list_album.setAdapter(itemAlbumAdapter2);
-//        }
-
-//        else if(spanCount < 4 && spanCount > 1) {
+        if(spanCount >= 4) {
+            spanCount = 1;
+        }
+        else {
             spanCount++;
-            recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
-            recyclerView.setAdapter(itemAlbumAdapter);
-//        }
-//        else if(spanCount == 4) {
-
-//            spanCount = 1;
-//            ryc_list_album.setLayoutManager(new LinearLayoutManager(this));
-//            ryc_list_album.setAdapter(itemAlbumAdapter3);
-
-//        }
-
+        }
+        recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
+        recyclerView.setAdapter(itemAlbumAdapter);
+        itemAlbumAdapter.setSpanCount(spanCount);
 
         animationRyc();
-//        SharedPreferences sharedPref = getSharedPreferences("MyPreferences", MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putInt("span_count", spanCount);
-//        editor.commit();
+
+        DataLocalManager.getInstance().setIntegerValue("span_count", spanCount);
     }
 
-//    private void slideShowEvents() {
-//        Intent intent = new Intent(ItemAlbumActivity.this, SlideShowActivity.class);
-//        intent.putStringArrayListExtra("data_slide", myAlbum);
-//        intent.putExtra("name", album_name);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        ItemAlbumActivity.this.startActivity(intent);
-//    }
+    private void slideShowEvents() {
+        Intent intent = new Intent(ItemAlbumActivity.this, SlideShowActivity.class);
+        ArrayList<MyImage> listImages = new ArrayList<>(dataImages);
+        intent.putParcelableArrayListExtra("dataImages", listImages);
+        intent.putExtra("name", albumName);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ItemAlbumActivity.this.startActivity(intent);
+    }
 
     private void setData() {
-        dataImages = intent.getParcelableArrayListExtra("data");
+        dataImages = intent.getParcelableArrayListExtra("dataImages");
         isSecret = intent.getIntExtra("isSecret", 0);
         duplicateImg = intent.getIntExtra("duplicateImg",0);
-//        itemAlbumAdapter2 = new ItemAlbumAdapter2(myAlbum);
 //        isAlbum = intent.getIntExtra("ok",0);
-//        itemAlbumAdapter3 = new ItemAlbumAdapter3(myAlbum);
 
     }
 
