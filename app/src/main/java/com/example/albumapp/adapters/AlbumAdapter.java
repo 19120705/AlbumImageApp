@@ -22,15 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHolder> {
-    private List<MyAlbum> mListAlbums;
+    private List<MyAlbum> listAlbums;
     private Context context;
-    public AlbumAdapter(List<MyAlbum> mListAlbums, Context context) {
-        this.mListAlbums = mListAlbums;
+    public AlbumAdapter(List<MyAlbum> list, Context context) {
+        this.listAlbums = list;
         this.context = context;
     }
 
-    public void setData(List<MyAlbum> mListAlbums) {
-        this.mListAlbums = mListAlbums;
+    public void setData(List<MyAlbum> list) {
+        this.listAlbums = list;
         notifyDataSetChanged();
     }
 
@@ -44,33 +44,33 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
 
     @Override
     public void onBindViewHolder(@NonNull AlbumViewHolder holder, int position) {
-        holder.onBind(mListAlbums.get(position), position);
+        holder.onBind(listAlbums.get(position), position);
     }
 
     @Override
     public int getItemCount() {
-        return mListAlbums.size();
+        return listAlbums.size();
     }
     class AlbumViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView img_album;
-        private final TextView txtName_album;
-        private final TextView txtCount_item_album;
+        private final ImageView imgAlbum;
+        private final TextView txtNameAlbum;
+        private final TextView txtCountItemAlbum;
         private Context context;
         private LinearLayout layout_bottom_delete;
         private LinearLayout layout_bottom_slide_show;
 
         public AlbumViewHolder(@NonNull View itemView) {
             super(itemView);
-            img_album = itemView.findViewById(R.id.img_album);
-            txtName_album = itemView.findViewById(R.id.txtName_album);
-            txtCount_item_album = itemView.findViewById(R.id.txtCount_item_album);
+            imgAlbum = itemView.findViewById(R.id.img_album);
+            txtNameAlbum = itemView.findViewById(R.id.txtName_album);
+            txtCountItemAlbum = itemView.findViewById(R.id.txtCount_item_album);
             context = itemView.getContext();
         }
 
         public void onBind(MyAlbum ref, int pos) {
             bindData(ref);
 
-            img_album.setOnClickListener(new View.OnClickListener() {
+            imgAlbum.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ItemAlbumActivity.class);
@@ -114,10 +114,10 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
         }
 
         private void bindData(MyAlbum ref) {
-            txtName_album.setText(ref.getName());
-            txtCount_item_album.setText(Integer.toString(ref.getListImage().size()) + " items");
+            txtNameAlbum.setText(ref.getName());
+            txtCountItemAlbum.setText(Integer.toString(ref.getListImage().size()) + " items");
             if (ref.getImage()!=null) {
-                Glide.with(context).load(ref.getImage().getThumb()).into(img_album);
+                Glide.with(context).load(ref.getImage().getThumb()).into(imgAlbum);
             }
 
 //
