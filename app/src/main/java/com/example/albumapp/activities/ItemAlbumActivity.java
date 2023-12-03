@@ -2,9 +2,7 @@ package com.example.albumapp.activities;
 
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -88,15 +86,15 @@ public class ItemAlbumActivity extends AppCompatActivity {
 ////            MyAsyncTask myAsyncTask = new MyAsyncTask();
 ////            myAsyncTask.execute();
 //                    }
-//                    if (result.getResultCode() == RESULT_OK && requestCode == REQUEST_CODE_PIC) {
-//                        String path_img = data.getStringExtra("path_img");
-//                        if(isSecret == 1) {
-//                            dataImages.remove(path_img);
-//                        }else if (duplicateImg == 2){
-//                            dataImages.remove(path_img);
-//                        }
-//                        recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
-//                    }
+                    if (Objects.equals(requestCode, "PHOTO")) {
+                        String path_img = data.getStringExtra("path_img");
+                        if(isSecret == 1) {
+                            dataImages.remove(path_img);
+                        }else if (duplicateImg == 2){
+                            dataImages.remove(path_img);
+                        }
+                        recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
+                    }
                 }
             });
 //    @Override
@@ -194,7 +192,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
                     slideShowEvents();
                 }
                else if (id == R.id.menu_add_image) {
-                    Intent intent_add = new Intent(ItemAlbumActivity.this, AddImageToAlbumActivity.class);
+                    Intent intent_add = new Intent(ItemAlbumActivity.this, AddImageActivity.class);
                     intent_add.putParcelableArrayListExtra("dataImages", new ArrayList<>(dataImages));
                     intent_add.putExtra("name", albumName);
                     someActivityResultLauncher.launch(intent_add);

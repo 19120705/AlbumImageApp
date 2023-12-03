@@ -1,7 +1,9 @@
 package com.example.albumapp.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.albumapp.R;
+import com.example.albumapp.activities.PhotoActivity;
 import com.example.albumapp.models.MyImage;
 
 import java.util.ArrayList;
@@ -22,7 +25,6 @@ public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.Item
     private List<MyImage> listImages;
     private ImageView imgPhoto;
     private int spanCount;
-    private static int REQUEST_CODE_PIC = 10;
 
     public ItemAlbumAdapter(List<MyImage> list, int spanCount) {
         this.listImages = list;
@@ -93,17 +95,16 @@ public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.Item
             // set ảnh cho imgPhoto bằng thư viện Glide
             Glide.with(context).load(image.getThumb()).into(imgPhoto);
 
-//            imgPhoto.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent intent = new Intent(context, PictureActivity.class);
-//                    intent.putStringArrayListExtra("data_list_path", album);
-//                    intent.putStringArrayListExtra("data_list_thumb", album);
-//                    intent.putExtra("pos", pos);
-//
-//                    ((Activity) context).startActivityForResult(intent, REQUEST_CODE_PIC);
-//                }
-//            });
+            imgPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, PhotoActivity.class);
+                    intent.putParcelableArrayListExtra("dataImages", new ArrayList<>(listImages));
+                    intent.putExtra("pos", pos);
+
+                    ((Activity) context).startActivityForResult(intent, 10);
+                }
+            });
         }
     }
 }

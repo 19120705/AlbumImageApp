@@ -26,6 +26,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.albumapp.R;
 import com.example.albumapp.adapters.SlideImageAdapter;
+import com.example.albumapp.models.MyImage;
 import com.example.albumapp.utility.DataLocalManager;
 import com.example.albumapp.utility.PhotoInterface;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -36,6 +37,7 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class PhotoActivity extends AppCompatActivity {
@@ -44,8 +46,7 @@ public class PhotoActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private BottomNavigationView bottomNavigationView;
     private FrameLayout frameLayout;
-    private ArrayList<String> imgListThumb;
-    private ArrayList<String> imgListPath;
+    private ArrayList<MyImage> listImages;
     private Intent intent;
     private String thumb;
     private String imgPath;
@@ -55,18 +56,16 @@ public class PhotoActivity extends AppCompatActivity {
     private PhotoInterface activityPhoto;
 
     private int pos;
-    public static Set<String> imageListFavorite = DataLocalManager.getInstance().getListSet("FAVORITE_ALBUM");
+    public static List<String> imageListFavorite = DataLocalManager.getInstance().getAlbumImages("Favorite");
     @Override
     protected void onResume() {
         super.onResume();
-        imageListFavorite = DataLocalManager.getInstance().getListSet("FAVORITE_ALBUM");
+        imageListFavorite = DataLocalManager.getInstance().getAlbumImages("Favorite");
     }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
-
-
 
 
 //        //Fix Uri file SDK link: https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi?answertab=oldest#tab-top
@@ -117,8 +116,7 @@ public class PhotoActivity extends AppCompatActivity {
     }
     private void setDataIntent() {
         intent = getIntent();
-        imgListPath = intent.getStringArrayListExtra("data_list_path");
-        imgListThumb = intent.getStringArrayListExtra("data_list_thumb");
+        listImages = intent.getParcelableArrayListExtra("dataImages");
         pos = intent.getIntExtra("pos", 0);
         //activityPicture = this;
 
@@ -126,7 +124,7 @@ public class PhotoActivity extends AppCompatActivity {
     private void setUpViewPaper(){
         viewPager = (ViewPager) findViewById(R.id.viewPager_photo);
         slideImageAdapter = new SlideImageAdapter();
-        slideImageAdapter.setData(imgListThumb, imgListPath);
+        slideImageAdapter.setData(listImages);
         slideImageAdapter.setContext(getApplicationContext());
         slideImageAdapter.setPictureInterface(activityPhoto);
         viewPager.setAdapter(slideImageAdapter);
@@ -134,8 +132,8 @@ public class PhotoActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                thumb = imgListThumb.get(position);
-                imgPath = imgListPath.get(position);
+                thumb = listImages.get(position).getThumb();
+                imgPath = listImages.get(position).getPath();
                 imageName = thumb.substring(thumb.lastIndexOf('/') + 1);
                 toolbar.setTitle(imageName);
                 if(!checkImgInFavorite(imgPath)){

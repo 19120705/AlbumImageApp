@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.albumapp.R;
-import com.example.albumapp.adapters.ImageAdapter;
 import com.example.albumapp.adapters.ImageSelectAdapter;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.utility.GetAllPhotoFromDisk;
@@ -27,7 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class AddImageToAlbumActivity extends AppCompatActivity{
+public class AddImageActivity extends AppCompatActivity{
     private ImageView img_back_create_album;
     private ImageView btnTick;
     private RecyclerView recyclerView;

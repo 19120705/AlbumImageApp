@@ -12,13 +12,13 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.example.albumapp.R;
+import com.example.albumapp.models.MyImage;
 import com.example.albumapp.utility.PhotoInterface;
 
 import java.util.ArrayList;
 
 public class SlideImageAdapter extends PagerAdapter {
-    private ArrayList<String> imageListThumb;
-    private ArrayList<String> imageListPath;
+    private ArrayList<MyImage> listImages;
     private PhotoInterface pictureInterface;
     private Context context;
     private ImageView imgPicture;
@@ -28,9 +28,8 @@ public class SlideImageAdapter extends PagerAdapter {
         this.pictureInterface = pictureInterface;
     }
 
-    public void setData(ArrayList<String> imageListThumb, ArrayList<String> imageListPath) {
-        this.imageListPath = imageListPath;
-        this.imageListThumb = imageListThumb;
+    public void setData(ArrayList<MyImage> listImages) {
+        this.listImages = listImages;
         notifyDataSetChanged();
     }
 
@@ -40,7 +39,7 @@ public class SlideImageAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return imageListPath.size();
+        return listImages.size();
     }
 
     @Override
@@ -54,7 +53,7 @@ public class SlideImageAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_slide_picture, container, false);
         imgPicture = view.findViewById(R.id.imgPicture);
-        Glide.with(context).load(imageListPath.get(position)).into(imgPicture);
+        Glide.with(context).load(listImages.get(position).getThumb()).into(imgPicture);
         ViewPager vp = (ViewPager) container;
         vp.addView(view, 0);
         imgPicture.setOnClickListener(new View.OnClickListener() {

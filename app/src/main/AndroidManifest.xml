@@ -47,7 +47,7 @@
             android:name=".activities.PhotoActivity">
         </activity>
         <activity
-            android:name=".activities.AddImageToAlbumActivity">
+            android:name=".activities.AddImageActivity">
         </activity>
     </application>
 
