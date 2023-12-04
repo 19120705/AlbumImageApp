@@ -33,11 +33,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     private Context context;
     private List<MyCategory> listCategories;
     private List<MyImage> listImages;
-
     private Intent intent;
-    private ArrayList<String> listPath;
-    private ArrayList<String> listThumb;
-
     public ImageAdapter(Context context) {
         this.context = context;
     }
@@ -110,21 +106,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         @Override
         public void run() {
-            listPath = new ArrayList<>();
-            listThumb = new ArrayList<>();
-            for(int i = 0;i<listCategories.size();i++) {
-                List<MyImage> listImages = listCategories.get(i).getListImages();
-                for (int j = 0; j < listImages.size(); j++) {
-                    listPath.add(listImages.get(j).getPath());
-                    listThumb.add(listImages.get(j).getThumb());
-                }
-            }
             // Update UI on the main thread
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    intent.putParcelableArrayListExtra("dataImages", new ArrayList<>(listImages));
-                    intent.putExtra("pos", listPath.indexOf(listImages.get(pos).getPath()));
+                    intent.putExtra("pos", pos);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }

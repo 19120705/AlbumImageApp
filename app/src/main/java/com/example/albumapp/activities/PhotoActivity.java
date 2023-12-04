@@ -28,6 +28,7 @@ import com.example.albumapp.R;
 import com.example.albumapp.adapters.SlideImageAdapter;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.utility.DataLocalManager;
+import com.example.albumapp.utility.GetAllPhotoFromDisk;
 import com.example.albumapp.utility.PhotoInterface;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -46,7 +47,7 @@ public class PhotoActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private BottomNavigationView bottomNavigationView;
     private FrameLayout frameLayout;
-    private ArrayList<MyImage> listImages;
+    private List<MyImage> listImages;
     private Intent intent;
     private String thumb;
     private String imgPath;
@@ -82,6 +83,7 @@ public class PhotoActivity extends AppCompatActivity {
         frameLayout = (FrameLayout) findViewById(R.id.frameViewPager_photo);
 
 
+        listImages = GetAllPhotoFromDisk.getImages(getApplicationContext());
         setToolbar();
         setDataIntent();
         setUpViewPaper();
@@ -116,7 +118,6 @@ public class PhotoActivity extends AppCompatActivity {
     }
     private void setDataIntent() {
         intent = getIntent();
-        listImages = intent.getParcelableArrayListExtra("dataImages");
         pos = intent.getIntExtra("pos", 0);
         //activityPicture = this;
 
@@ -124,7 +125,7 @@ public class PhotoActivity extends AppCompatActivity {
     private void setUpViewPaper(){
         viewPager = (ViewPager) findViewById(R.id.viewPager_photo);
         slideImageAdapter = new SlideImageAdapter();
-        slideImageAdapter.setData(listImages);
+        slideImageAdapter.setData(new ArrayList<>(listImages));
         slideImageAdapter.setContext(getApplicationContext());
         slideImageAdapter.setPictureInterface(activityPhoto);
         viewPager.setAdapter(slideImageAdapter);

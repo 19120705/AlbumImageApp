@@ -79,7 +79,7 @@ public class CreateAlbumActivity extends AppCompatActivity{
 
     private void setViewRyc() {
         listImage = GetAllPhotoFromDisk.getImages(getApplicationContext());
-        ImageSelectAdapter imageAdapter = new ImageSelectAdapter(this);
+        ImageSelectAdapter imageAdapter = new ImageSelectAdapter(this, true);
         imageAdapter.setData(listImage);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         recyclerView.setAdapter(imageAdapter);

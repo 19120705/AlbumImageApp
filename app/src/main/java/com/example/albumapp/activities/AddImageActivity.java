@@ -73,7 +73,7 @@ public class AddImageActivity extends AppCompatActivity{
 
     private void setViewRyc() {
         listImages = GetAllPhotoFromDisk.getImages(this);
-        ImageSelectAdapter imageAdapter = new ImageSelectAdapter(this);
+        ImageSelectAdapter imageAdapter = new ImageSelectAdapter(this, true);
         imageAdapter.setData(listImages);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         recyclerView.setAdapter(imageAdapter);
