@@ -106,14 +106,15 @@ public class AddImageActivity extends AppCompatActivity{
                 imageListFavor.add(img.getPath());
             }
             for (MyImage img: listImageSelected){
-                boolean isDuplicate = false;
                 for (MyImage dataImg: dataImages) {
                     if (Objects.equals(img.getPath(), dataImg.getPath())) {
-                        isDuplicate = true;
+                        listImageSelected.remove(img);
                         break;
                     }
                 }
-                if (!isDuplicate) {
+            }
+            if (!listImageSelected.isEmpty()) {
+                for (MyImage img: listImageSelected) {
                     imageListFavor.add(img.getPath());
                 }
             }
@@ -125,9 +126,14 @@ public class AddImageActivity extends AppCompatActivity{
                 @Override
                 public void run() {
                     Intent resultIntent = new Intent();
-                    resultIntent.putParcelableArrayListExtra("list_result", new ArrayList<>(listImageSelected));
-                    resultIntent.putExtra("REQUEST_CODE", "ADD");
-                    setResult(RESULT_OK, resultIntent);
+                    if (listImageSelected.isEmpty()) {
+                        setResult(RESULT_CANCELED, resultIntent);
+                    }
+                    else {
+                        resultIntent.putParcelableArrayListExtra("list_result", new ArrayList<>(listImageSelected));
+                        resultIntent.putExtra("REQUEST_CODE", "ADD");
+                        setResult(RESULT_OK, resultIntent);
+                    }
                     finish();
                 }
             });

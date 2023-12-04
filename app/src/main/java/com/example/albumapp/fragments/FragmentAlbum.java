@@ -50,6 +50,7 @@ public class FragmentAlbum extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        listAlbum = getListAlbum(listImage);
         albumAdapter.setData(listAlbum);
     }
     private void setViewRyc() {
@@ -75,7 +76,7 @@ public class FragmentAlbum extends Fragment {
         });
     }
     private List<MyAlbum> getListAlbum(List<MyImage> listImage) {
-        List<String> listAlbumName = DataLocalManager.getAllAlbum();
+        List<String> listAlbumName = DataLocalManager.getInstance().getAllAlbum();
         List<MyAlbum> allAlbum = new ArrayList<>();
 
         if(!listImage.isEmpty()) {
@@ -146,6 +147,6 @@ public class FragmentAlbum extends Fragment {
     private void openCreateAlbumActivity() {
         Intent _intent = new Intent(view.getContext(), CreateAlbumActivity.class);
         _intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        ((Activity) view.getContext()).startActivityForResult(_intent, REQUEST_CODE_CREATE);
+        view.getContext().startActivity(_intent);
     }
 }

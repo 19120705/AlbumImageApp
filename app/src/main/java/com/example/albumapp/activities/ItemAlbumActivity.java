@@ -3,6 +3,7 @@ package com.example.albumapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -47,8 +48,8 @@ public class ItemAlbumActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.ryc_list_image);
         toolbarItemAlbum = findViewById(R.id.toolbar_item_album);
         intent = getIntent();
-        spanCount = DataLocalManager.getInstance().getSpanCount();
         setData();
+        spanCount = DataLocalManager.getInstance().getSpanCount();
         setRyc();
         events();
     }
@@ -67,7 +68,8 @@ public class ItemAlbumActivity extends AppCompatActivity {
 
                     if (Objects.equals(requestCode, "ADD")) {
                         List<MyImage> resultList = data.getParcelableArrayListExtra("list_result");
-                        if(resultList !=null) {
+                        Log.e("TAG", "onActivityResult: " + Integer.toString(resultList.size()));
+                        if(!resultList.isEmpty()) {
                             dataImages.addAll(resultList);
                             recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
                         }

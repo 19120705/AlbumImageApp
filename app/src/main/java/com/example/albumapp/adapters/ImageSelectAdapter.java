@@ -1,6 +1,7 @@
 package com.example.albumapp.adapters;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.albumapp.R;
+import com.example.albumapp.activities.PhotoActivity;
 import com.example.albumapp.models.MyImage;
 
 import java.util.ArrayList;
@@ -49,30 +51,7 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ImageSelectHolder holder, @SuppressLint("RecyclerView") int position) {
-        MyImage image = listImages.get(position);
-        if (image == null) {
-            return;
-        }
-
-        // set ảnh cho imgPhoto bằng thư viện Glide
-        Glide.with(context)
-                .load(listImages.get(position).getThumb())
-                .override(1000, 1000)
-                .into(holder.imgPhoto);
-
-        holder.imgPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                    if (holder.imgPhoto.getImageAlpha() == 100) {
-                        holder.imgPhoto.setImageAlpha(255);
-                        removeList(image);
-                    } else if (holder.imgPhoto.getImageAlpha() == 255) {
-                        holder.imgPhoto.setImageAlpha(100);
-                        addList(image);
-                    }
-            }
-        });
-
+        holder.onBind(listImages.get(position), position);
     }
 
     @Override
@@ -100,6 +79,31 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
         public ImageSelectHolder(@NonNull View itemView) {
             super(itemView);
             imgPhoto = itemView.findViewById(R.id.imgPhoto);
+            
+            ViewGroup.LayoutParams layoutParam = imgPhoto.getLayoutParams();
+            layoutParam.width = 350;
+            layoutParam.height = 350;
+            imgPhoto.setLayoutParams(layoutParam);
+        }
+        public void onBind(MyImage image, int position) {
+            if (image == null) {
+                return;
+            }
+
+            // set ảnh cho imgPhoto bằng thư viện Glide
+            Glide.with(context).load(image.getThumb()).into(imgPhoto);
+            imgPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (imgPhoto.getImageAlpha() == 100) {
+                        imgPhoto.setImageAlpha(255);
+                        removeList(image);
+                    } else if (imgPhoto.getImageAlpha() == 255) {
+                        imgPhoto.setImageAlpha(100);
+                        addList(image);
+                    }
+                }
+            });
         }
     }
 }

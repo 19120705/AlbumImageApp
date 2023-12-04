@@ -53,7 +53,7 @@ public class DataLocalManager {
         return listImg;
     }
 
-    public static List<String> getAllAlbum() {
+    public List<String> getAllAlbum() {
         List<String> allKey = new ArrayList<String>();
         Map<String, ?> allEntries = instance.albumData.getAll();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
@@ -69,6 +69,8 @@ public class DataLocalManager {
     }
 
     public int getSpanCount(){
-        return sharedPreferences.getInt("span_count", 3);
+        if(instance.sharedPreferences != null)
+            return instance.sharedPreferences.getInt("span_count", 3);
+        else return 3;
     }
 }

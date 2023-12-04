@@ -1,6 +1,8 @@
 package com.example.albumapp.activities;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -56,7 +58,7 @@ public class CreateAlbumActivity extends AppCompatActivity{
             public void onClick(View view) {
                 if(!TextUtils.isEmpty(edtTitleAlbum.getText())) {
                     String albumName = edtTitleAlbum.getText().toString();
-                    List<String> allAlbumName = DataLocalManager.getAllAlbum();
+                    List<String> allAlbumName = DataLocalManager.getInstance().getAllAlbum();
                     if(albumName.contains("#")) {
                         Toast.makeText(getApplicationContext(), "Không được chứa kí tự #", Toast.LENGTH_SHORT).show();
                     }
@@ -64,7 +66,8 @@ public class CreateAlbumActivity extends AppCompatActivity{
                         Toast.makeText(getApplicationContext(), "Album này đã tồn tại", Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        createAlbum(albumName);
+                        CreateAlbumActivity.CreateAlbumAsyncTask myAsyncTask = new CreateAlbumActivity.CreateAlbumAsyncTask(albumName);
+                        new Thread(myAsyncTask).start();
                     }
                 }
                 else{
@@ -88,21 +91,34 @@ public class CreateAlbumActivity extends AppCompatActivity{
         edtTitleAlbum = findViewById(R.id.edtTitleAlbum);
         recyclerView = findViewById(R.id.rycAddAlbum);
     }
+    public class CreateAlbumAsyncTask implements Runnable {
+        List<MyImage> listImageSelected;
+        String name;
+        public CreateAlbumAsyncTask(String name) {
+            this.name = name;
+        }
+        @Override
+        public void run() {
 
-    private void createAlbum(String name) {
-        ImageSelectAdapter adapter = (ImageSelectAdapter) recyclerView.getAdapter();
-        if (adapter!=null) {
-            listImageSelected = adapter.getListSelectedImage();
+            ImageSelectAdapter adapter = (ImageSelectAdapter) recyclerView.getAdapter();
+            if (adapter!=null) {
+                listImageSelected = adapter.getListSelectedImage();
+            }
+            if (listImageSelected.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Chọn một bức ảnh", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Set<String> imageListFavor = new HashSet<>();
+            for (MyImage img :listImageSelected){
+                imageListFavor.add(img.getPath());
+            }
+            DataLocalManager.getInstance().saveAlbum(name, imageListFavor);
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            });
         }
-         if (listImageSelected.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "Chọn một bức ảnh", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Set<String> imageListFavor = new HashSet<>();
-        for (MyImage img :listImageSelected){
-            imageListFavor.add(img.getPath());
-        }
-        DataLocalManager.getInstance().saveAlbum(name, imageListFavor);
-        finish();
     }
 }

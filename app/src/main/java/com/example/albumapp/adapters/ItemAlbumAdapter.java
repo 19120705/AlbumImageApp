@@ -46,7 +46,7 @@ public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.Item
     @NonNull
     @Override
     public ItemAlbumViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_picture_album, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_picture, parent, false);
 
         return new ItemAlbumViewHolder(view);
     }
