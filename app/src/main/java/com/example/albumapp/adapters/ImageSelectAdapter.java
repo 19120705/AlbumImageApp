@@ -30,9 +30,11 @@ import java.util.List;
 public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.ImageSelectHolder> {
     private List<MyImage> listImages;
     private List<MyImage> listSelectedImages;
+    boolean isMultiSelect;
     private Context context;
-    public ImageSelectAdapter(Context context) {
+    public ImageSelectAdapter(Context context, boolean isMultiSelect) {
         this.context = context;
+        this.isMultiSelect = isMultiSelect;
     }
 
     public void setData(List<MyImage> listImages) {
@@ -79,7 +81,7 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
         public ImageSelectHolder(@NonNull View itemView) {
             super(itemView);
             imgPhoto = itemView.findViewById(R.id.imgPhoto);
-            
+
             ViewGroup.LayoutParams layoutParam = imgPhoto.getLayoutParams();
             layoutParam.width = 350;
             layoutParam.height = 350;
@@ -92,6 +94,14 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
 
             // set ảnh cho imgPhoto bằng thư viện Glide
             Glide.with(context).load(image.getThumb()).into(imgPhoto);
+            imgPhoto.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    isMultiSelect = true;
+
+                    return true;
+                }
+            });
             imgPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
