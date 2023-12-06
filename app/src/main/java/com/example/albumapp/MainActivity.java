@@ -71,38 +71,9 @@ public class MainActivity extends AppCompatActivity {
                 {
                     viewPager2.setCurrentItem(3);
                 }
-//                switch (item.getItemId()) {
-//                    case R.id.photo:
-//
-//                        viewPager2.setCurrentItem(0);
-//                        break;
-//
-//                    case R.id.album:
-//
-//                        viewPager2.setCurrentItem(1);
-//                        break;
-//
-//                    case R.id.secret:
-//
-//                        viewPager2.setCurrentItem(2);
-//                        break;
-//
-//                    case R.id.favorite:
-//
-//                        viewPager2.setCurrentItem(3);
-//                        break;
-
-//                }
                 return true;
             }
         });
-
-
-
-
-
-
-
     }
     private void setUpViewPager() {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), getLifecycle());

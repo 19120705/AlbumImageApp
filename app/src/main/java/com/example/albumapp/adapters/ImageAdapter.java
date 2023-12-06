@@ -33,6 +33,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     private Context context;
     private List<MyCategory> listCategories;
     private List<MyImage> listImages;
+
     private Intent intent;
     public ImageAdapter(Context context) {
         this.context = context;
@@ -99,6 +100,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     public class MyAsyncTask implements Runnable {
         public int pos;
+        public ArrayList<MyImage> dataImages;
 
         public void setPos(int pos) {
             this.pos = pos;
@@ -106,10 +108,22 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         @Override
         public void run() {
+            //Lay image cua tat ca category
+            dataImages = new ArrayList<>();
+            for(int i = 0;i<listCategories.size();i++) {
+                dataImages.addAll(listCategories.get(i).getListImages());
+            }
+            for(int i = 0;i<dataImages.size();i++) {
+                if (listImages.get(pos).getPath() == dataImages.get(i).getPath()) {
+                    pos = i;
+                    break;
+                }
+            }
             // Update UI on the main thread
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
+                    intent.putParcelableArrayListExtra("dataImages", new ArrayList<>(dataImages));
                     intent.putExtra("pos", pos);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);

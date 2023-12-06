@@ -97,6 +97,8 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
             imgPhoto.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
+                    if (isMultiSelect)
+                        return false;
                     isMultiSelect = true;
 
                     return true;
@@ -105,12 +107,21 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
             imgPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (imgPhoto.getImageAlpha() == 100) {
-                        imgPhoto.setImageAlpha(255);
-                        removeList(image);
-                    } else if (imgPhoto.getImageAlpha() == 255) {
-                        imgPhoto.setImageAlpha(100);
-                        addList(image);
+                    if (isMultiSelect) {
+                        if (imgPhoto.getImageAlpha() == 100) {
+                            imgPhoto.setImageAlpha(255);
+                            removeList(image);
+                        } else if (imgPhoto.getImageAlpha() == 255) {
+                            imgPhoto.setImageAlpha(100);
+                            addList(image);
+                        }
+                    }
+                    else {
+                        Intent intent = new Intent(context, PhotoActivity.class);
+                        intent.putParcelableArrayListExtra("dataImages", new ArrayList<>(listImages));
+                        intent.putExtra("pos", position);
+
+                        ((Activity) context).startActivityForResult(intent, 10);
                     }
                 }
             });
