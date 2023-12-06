@@ -77,10 +77,12 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
 
     public class ImageSelectHolder extends RecyclerView.ViewHolder {
         private ImageView imgPhoto;
+        private ImageView iconTick;
 
         public ImageSelectHolder(@NonNull View itemView) {
             super(itemView);
             imgPhoto = itemView.findViewById(R.id.imgPhoto);
+            iconTick = itemView.findViewById(R.id.iconTick);
 
             ViewGroup.LayoutParams layoutParam = imgPhoto.getLayoutParams();
             layoutParam.width = 350;
@@ -108,11 +110,13 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
                 @Override
                 public void onClick(View view) {
                     if (isMultiSelect) {
-                        if (imgPhoto.getImageAlpha() == 100) {
+                        if (iconTick.getVisibility() == View.VISIBLE) {
                             imgPhoto.setImageAlpha(255);
+                            iconTick.setVisibility(View.INVISIBLE);
                             removeList(image);
-                        } else if (imgPhoto.getImageAlpha() == 255) {
+                        } else if (iconTick.getVisibility() == View.INVISIBLE) {
                             imgPhoto.setImageAlpha(100);
+                            iconTick.setVisibility(View.VISIBLE);
                             addList(image);
                         }
                     }
