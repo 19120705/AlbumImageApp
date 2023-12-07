@@ -1,32 +1,40 @@
 package com.example.albumapp.activities;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.albumapp.R;
+import com.example.albumapp.adapters.ImageSelectAdapter;
 import com.example.albumapp.adapters.ItemAlbumAdapter;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.utility.DataLocalManager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ItemAlbumActivity extends AppCompatActivity {
     private List<MyImage> dataImages;
@@ -99,43 +107,6 @@ public class ItemAlbumActivity extends AppCompatActivity {
                     }
                 }
             });
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_ADD) {
-//            List<MyImage> resultList = data.getParcelableArrayListExtra("list_result");
-//            if(resultList !=null) {
-//                dataImages.addAll(resultList);
-//                recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
-//            }
-//        }
-//        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_CHOOSE) {
-//            if(data != null) {
-//                int isMoved = data.getIntExtra("move", 0);
-//                if (isMoved == 1) {
-//                    ArrayList<String> resultList = data.getStringArrayListExtra("list_result");
-//                    if (resultList != null) {
-//                        dataImages.remove(resultList);
-//                        recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
-//                    }
-//                }
-//            }
-//        }
-//        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_SECRET) {
-////            MyAsyncTask myAsyncTask = new MyAsyncTask();
-////            myAsyncTask.execute();
-//        }
-//        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_PIC) {
-//            String path_img = data.getStringExtra("path_img");
-//            if(isSecret == 1) {
-//                dataImages.remove(path_img);
-//            }else if (duplicateImg == 2){
-//                dataImages.remove(path_img);
-//            }
-//            recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
-//        }
-//    }
 
     private void setRyc() {
         albumName = intent.getStringExtra("name");
@@ -199,7 +170,9 @@ public class ItemAlbumActivity extends AppCompatActivity {
                     intent_add.putExtra("name", albumName);
                     someActivityResultLauncher.launch(intent_add);
                 }
-
+                else if (id == R.id.menu_remove_album) {
+                    deleteAlbum();
+                }
                 return true;
             }
         });
@@ -235,6 +208,26 @@ public class ItemAlbumActivity extends AppCompatActivity {
         intent_show.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ItemAlbumActivity.this.startActivity(intent_show);
     }
+    private void deleteAlbum() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(R.layout.dialog_confirm_delete)
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Perform delete operation here
+                        ItemAlbumActivity.RemoveAlbumAsyncTask myAsyncTask = new ItemAlbumActivity.RemoveAlbumAsyncTask(albumName);
+                        new Thread(myAsyncTask).start();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
     private void setData() {
         dataImages = intent.getParcelableArrayListExtra("dataImages");
@@ -244,37 +237,28 @@ public class ItemAlbumActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        MyAsyncTask myAsyncTask = new MyAsyncTask();
-//        myAsyncTask.execute();
-    }
-
-
-//    public class MyAsyncTask extends AsyncTaskExecutorService<Void, Integer, Void> {
-//
-//        @Override
-//        protected Void doInBackground(Void voids) {
-//            for(int i=0;i<myAlbum.size();i++) {
-//                File file = new File(myAlbum.get(i));
-//                if(!file.exists()) {
-//                    myAlbum.remove(i);
-//                }
-//            }
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void unused) {
-//            spanAction();
-//        }
+//    @Override
+//    public boolean onSupportNavigateUp() {
+//        onBackPressed();
+//        return true;
 //    }
+//
+
+    public class RemoveAlbumAsyncTask implements Runnable {
+        String name;
+        public RemoveAlbumAsyncTask(String name) {
+            this.name = name;
+        }
+        @Override
+        public void run() {
+            DataLocalManager.getInstance().removeAlbum(name);
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            });
+        }
+    }
 
 }

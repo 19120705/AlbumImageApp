@@ -35,6 +35,12 @@ public class DataLocalManager {
         editor.apply();
     }
 
+    public void removeAlbum(String albumName){
+        SharedPreferences.Editor editor = instance.albumData.edit();
+        editor.remove(albumName);
+        editor.apply();
+    }
+
     public void setListImgByList(String key, List<String> listImg){
         Set<String> setListImg = new HashSet<>();
 
