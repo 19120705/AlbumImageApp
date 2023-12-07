@@ -150,8 +150,8 @@ public class FragmentPhoto extends Fragment {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 int id = item.getItemId();
-                if(id == R.id.menuSearch) {
-                    eventSearch(item);
+                if(id == R.id.menuSpanCount) {
+                    changeSpanCount();
                 }
                 else if(id == R.id.menuCamera)
                 {
@@ -184,22 +184,24 @@ public class FragmentPhoto extends Fragment {
         });
     }
 
-    private void eventSearch(@NonNull MenuItem item) {
-        final Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DATE);
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                calendar.set(i, i1, i2);
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-                String date = simpleDateFormat.format(calendar.getTime());
-                //showImageByDate(date);
-            }
-        }, year, month, day);
-        datePickerDialog.show();
-    }
+//    private void eventSearch(@NonNull MenuItem item) {
+//        final Calendar calendar = Calendar.getInstance();
+//        int day = calendar.get(Calendar.DATE);
+//        int month = calendar.get(Calendar.MONTH);
+//        int year = calendar.get(Calendar.YEAR);
+//        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+//            @Override
+//            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+//                calendar.set(i, i1, i2);
+//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+//                String date = simpleDateFormat.format(calendar.getTime());
+//                //showImageByDate(date);
+//            }
+//        }, year, month, day);
+//        datePickerDialog.show();
+//    }
+
+    public void changeSpanCount(){}
     public String getRealPathFromURI(Uri contentUri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = getActivity().managedQuery(contentUri, proj, null, null, null);

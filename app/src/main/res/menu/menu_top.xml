@@ -8,9 +8,9 @@
         app:showAsAction="always"
         android:iconTint="?attr/colorOnBackground"/>
 
-    <item android:id="@+id/menuSearch"
-        android:title="@string/search"
-        android:icon="@drawable/ic_search"
+    <item android:id="@+id/menuSpanCount"
+        android:title="SpanCount"
+        android:icon="@drawable/ic_change_span_count"
         app:showAsAction="ifRoom|collapseActionView"
         android:iconTint="?attr/colorOnBackground"/>
 
