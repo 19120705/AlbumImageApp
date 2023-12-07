@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.albumapp.activities.CreateAlbumActivity;
 import com.example.albumapp.adapters.AlbumAdapter;
@@ -36,6 +38,10 @@ public class FragmentAlbum extends Fragment {
     private androidx.appcompat.widget.Toolbar toolbar_album;
     private List<MyAlbum> listAlbum;
     private AlbumAdapter albumAdapter;
+    private ViewPager2 viewPager2;
+    public FragmentAlbum(ViewPager2 viewPager2) {
+        this.viewPager2 = viewPager2;
+    }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_album, container, false);
@@ -54,9 +60,44 @@ public class FragmentAlbum extends Fragment {
         albumAdapter.setData(listAlbum);
     }
     private void setViewRyc() {
-        recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2, GridLayoutManager.HORIZONTAL, false));
         albumAdapter = new AlbumAdapter(listAlbum, getContext());
         recyclerView.setAdapter(albumAdapter);
+        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            int lastX = 0;
+
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                switch (e.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        lastX = (int) e.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        boolean isScrollingRight = e.getX() < lastX;
+                        if ((isScrollingRight && ((GridLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition()
+                                == recyclerView.getAdapter().getItemCount() - 1) ||
+                                (!isScrollingRight && ((GridLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition() == 0)) {
+                            viewPager2.setUserInputEnabled(true);
+                        } else {
+                            viewPager2.setUserInputEnabled(false);
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        lastX = 0;
+                        viewPager2.setUserInputEnabled(true);
+                        break;
+                }
+                return false;
+            }
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
     }
     private void createToolBar() {
         toolbar_album.inflateMenu(R.menu.menu_top_album);

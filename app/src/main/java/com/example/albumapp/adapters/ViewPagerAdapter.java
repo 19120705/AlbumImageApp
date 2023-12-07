@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.albumapp.fragments.FragmentAlbum;
 import com.example.albumapp.fragments.FragmentAlbumFavorite;
@@ -16,10 +17,13 @@ import com.example.albumapp.fragments.FragmentPhoto;
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
     private Context context;
+    private  ViewPager2 viewPager2;
 
     public void setContext(Context context) {
         this.context = context;
-//        data = GetAllPhotoFromGallery.getAllImageFromGallery(context);
+    }
+    public void setViewPage2(ViewPager2 viewPager2) {
+        this.viewPager2 = viewPager2;
     }
 
     public ViewPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
@@ -34,7 +38,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 0:
                 return new FragmentPhoto();
             case 1:
-                return new FragmentAlbum();
+                return new FragmentAlbum(viewPager2);
             case 2:
                 return new FragmentTrash();
             case 3:
