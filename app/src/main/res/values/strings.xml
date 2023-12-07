@@ -34,6 +34,8 @@
     <string name="model">Model</string>
     <string name="size">Size</string>
     <string name="author">Author</string>
+    <string name="location">Location</string>
+    <string name="addprivate">Add To Private</string>
 
 
 

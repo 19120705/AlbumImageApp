@@ -189,6 +189,7 @@ public class PhotoActivity extends AppCompatActivity {
                 TextView txtInfoAuthor = (TextView) infoDialogView.findViewById(R.id.txtInfoAuthor);
                 TextView txtInfoTime = (TextView) infoDialogView.findViewById(R.id.txtInfoTime);
                 TextView txtInfoName = (TextView) infoDialogView.findViewById(R.id.txtInfoName);
+                TextView txtLocation = (TextView) infoDialogView.findViewById(R.id.txtLocation);
 
                 File file = new File(imgPath);
                 long fileSizeInBytes = file.length();
@@ -210,6 +211,13 @@ public class PhotoActivity extends AppCompatActivity {
                 txtInfoModelMore.setText(modelMore);
                 txtInfoAuthor.setText(exifInterface.getAttribute(ExifInterface.TAG_ARTIST));
                 txtInfoTime.setText(exifInterface.getAttribute(ExifInterface.TAG_DATETIME));
+
+                String latitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+                String latitudeRef = exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
+                String longitude = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+                String longitudeRef = exifInterface.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
+                String location = latitude + " " + latitudeRef + ", " + longitude + " " + longitudeRef;
+                txtLocation.setText(location);
 
                 infoDialog.setContentView(infoDialogView);
                 infoDialog.show();
