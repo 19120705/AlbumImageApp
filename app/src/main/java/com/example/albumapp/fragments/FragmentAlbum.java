@@ -2,6 +2,7 @@ package com.example.albumapp.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -15,11 +16,14 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.albumapp.activities.CreateAlbumActivity;
 import com.example.albumapp.adapters.AlbumAdapter;
+import com.example.albumapp.adapters.MenuAdapter;
+import com.example.albumapp.adapters.MenuAlbumUtiAdapter;
 import com.example.albumapp.models.MyAlbum;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.R;
@@ -33,11 +37,13 @@ import java.util.Objects;
 public class FragmentAlbum extends Fragment {
     private static final int REQUEST_CODE_CREATE = 100;
     private RecyclerView recyclerView;
+    private RecyclerView recyclerViewForOtherAlbum;
     private List<MyImage> listImage;
     private View view;
     private androidx.appcompat.widget.Toolbar toolbar_album;
     private List<MyAlbum> listAlbum;
     private AlbumAdapter albumAdapter;
+    private MenuAlbumUtiAdapter menuAlbumUtiAdapter;
     private ViewPager2 viewPager2;
     public FragmentAlbum(ViewPager2 viewPager2) {
         this.viewPager2 = viewPager2;
@@ -49,6 +55,7 @@ public class FragmentAlbum extends Fragment {
         listAlbum = getListAlbum(listImage);
         toolbar_album = view.findViewById(R.id.toolbar_album);
         recyclerView = view.findViewById(R.id.recyclerViewAlbum);
+        recyclerViewForOtherAlbum = view.findViewById(R.id.recyclerViewAlbumUtilities);
         setViewRyc();
         createToolBar();
         return view;
@@ -98,6 +105,13 @@ public class FragmentAlbum extends Fragment {
 
             }
         });
+        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+        recyclerViewForOtherAlbum.setLayoutManager(layoutManager);
+        List<com.example.albumapp.models.MenuItem> menuItems = new ArrayList<>();
+        menuItems.add(new com.example.albumapp.models.MenuItem(R.drawable.ic_priavte_off, getResources().getString(R.string.albumPrivate), Color.BLACK));
+        menuItems.add(new com.example.albumapp.models.MenuItem(R.drawable.ic_trash, getResources().getString(R.string.recentlydeleted), Color.BLACK));
+        menuAlbumUtiAdapter = new MenuAlbumUtiAdapter(menuItems);
+        recyclerViewForOtherAlbum.setAdapter(menuAlbumUtiAdapter);
     }
     private void createToolBar() {
         toolbar_album.inflateMenu(R.menu.menu_top_album);

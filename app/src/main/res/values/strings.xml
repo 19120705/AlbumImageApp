@@ -36,6 +36,10 @@
     <string name="author">Author</string>
     <string name="location">Location</string>
     <string name="addprivate">Add To Private</string>
+    <string name="listalbum">List album</string>
+    <string name="albumPrivate">Album Private</string>
+    <string name="recentlydeleted">Recently deleted</string>
+    <string name="utilities">Utilities</string>
 
 
 
