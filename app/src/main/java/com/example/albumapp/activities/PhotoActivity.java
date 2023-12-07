@@ -2,6 +2,9 @@ package com.example.albumapp.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -9,10 +12,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.os.StrictMode;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import android.widget.FrameLayout;
@@ -32,16 +38,18 @@ import com.example.albumapp.utility.GetAllPhotoFromDisk;
 import com.example.albumapp.utility.PhotoInterface;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PhotoActivity extends AppCompatActivity {
+public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
 
     private ViewPager viewPager;
     private Toolbar toolbar;
@@ -85,8 +93,10 @@ public class PhotoActivity extends AppCompatActivity {
         setToolbar();
         setDataIntent();
         setUpViewPaper();
+        setBottomNavigationView();
 
     }
+
 
     private void setToolbar(){
         toolbar = findViewById(R.id.toolbar_photo);
@@ -118,7 +128,7 @@ public class PhotoActivity extends AppCompatActivity {
         intent = getIntent();
         pos = intent.getIntExtra("pos", 0);
         listImages = intent.getParcelableArrayListExtra("dataImages");
-        //activityPicture = this;
+        activityPhoto = this;
 
     }
     private void setUpViewPaper(){
@@ -137,9 +147,11 @@ public class PhotoActivity extends AppCompatActivity {
                 imageName = thumb.substring(thumb.lastIndexOf('/') + 1);
                 toolbar.setTitle(imageName);
                 if(!checkImgInFavorite(imgPath)){
+                    Log.e("checkFavorite", "onNavigationItemSelected: No favorite");
                     bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite);
                 }
                 else{
+                    Log.e("checkFavorite", "onNavigationItemSelected: favorite");
                     bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite_select);
                 }
             }
@@ -151,6 +163,62 @@ public class PhotoActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+    }
+    private void setBottomNavigationView(){
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Uri targetUri =Uri.parse("file://" + thumb);
+                if(item.getItemId()==R.id.sharePic)
+                {
+                    if(thumb.contains("gif")){
+                        Intent share = new Intent(Intent.ACTION_SEND);
+                        share.setType("image/*");
+                        share.putExtra(Intent.EXTRA_STREAM, targetUri);
+                        startActivity( Intent.createChooser(share, "Share this image to your friends!") );
+                    }
+                    else {
+                        Drawable mDrawable = Drawable.createFromPath(imgPath);
+                        Bitmap mBitmap = ((BitmapDrawable) mDrawable).getBitmap();
+                        String path = MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "Image Description", null);
+                        thumb = thumb.replaceAll(" ", "");
+
+                        Uri uri = Uri.parse(path);
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        shareIntent.setType("image/*");
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                        startActivity(Intent.createChooser(shareIntent, "Share Image"));
+                    }
+                }
+                else if(item.getItemId()==R.id.editPic)
+                {}
+                else if(item.getItemId()==R.id.starPic)
+                {
+                    if(!imageListFavorite.add(imgPath)){
+                        imageListFavorite.remove(imgPath);
+                    }
+
+                    Set<String> setListImgFavorite = new HashSet<>();
+                    for (String i: imageListFavorite) {
+                        setListImgFavorite.add(i);
+                    }
+                    DataLocalManager.getInstance().saveAlbum("Favorite",setListImgFavorite);
+                    Toast.makeText(PhotoActivity.this, imageListFavorite.size()+"", Toast.LENGTH_SHORT).show();
+                    if(!checkImgInFavorite(imgPath)){
+                        Log.e("checkFavorite", "onNavigationItemSelected: No favorite");
+                        bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite);
+                    }
+                    else{
+                        Log.e("checkFavorite", "onNavigationItemSelected: favorite");
+                        bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite_select);
+
+                    }
+                }
+                else if(item.getItemId()==R.id.deletePic)
+                {}
+                return true;
             }
         });
     }
@@ -259,4 +327,18 @@ public class PhotoActivity extends AppCompatActivity {
 //            }
 //        });
 //    }
+
+    private void showNavigation(boolean flag) {
+        if (!flag) {
+            bottomNavigationView.setVisibility(View.INVISIBLE);
+            toolbar.setVisibility(View.INVISIBLE);
+        } else {
+            bottomNavigationView.setVisibility(View.VISIBLE);
+            toolbar.setVisibility(View.VISIBLE);
+        }
+    }
+    @Override
+    public void actionShow(boolean flag) {
+        showNavigation(flag);
+    }
 }

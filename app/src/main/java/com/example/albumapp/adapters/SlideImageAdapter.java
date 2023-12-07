@@ -19,13 +19,13 @@ import java.util.ArrayList;
 
 public class SlideImageAdapter extends PagerAdapter {
     private ArrayList<MyImage> listImages;
-    private PhotoInterface pictureInterface;
+    private PhotoInterface photoInterface;
     private Context context;
     private ImageView imgPicture;
     private boolean flag = false;
 
-    public void setPictureInterface(PhotoInterface pictureInterface) {
-        this.pictureInterface = pictureInterface;
+    public void setPictureInterface(PhotoInterface photoInterface) {
+        this.photoInterface = photoInterface;
     }
 
     public void setData(ArrayList<MyImage> listImages) {
@@ -59,7 +59,7 @@ public class SlideImageAdapter extends PagerAdapter {
         imgPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pictureInterface.actionShow(flag);
+                photoInterface.actionShow(flag);
                 if(flag)
                     flag = false;
                 else

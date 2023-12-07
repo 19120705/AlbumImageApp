@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +39,8 @@ public class FragmentAlbum extends Fragment {
     private static final int REQUEST_CODE_CREATE = 100;
     private RecyclerView recyclerView;
     private RecyclerView recyclerViewForOtherAlbum;
+    private LinearLayout linearLayoutBtnPrivate;
+    private LinearLayout linearLayoutBtnTrash;
     private List<MyImage> listImage;
     private View view;
     private androidx.appcompat.widget.Toolbar toolbar_album;
@@ -55,7 +58,8 @@ public class FragmentAlbum extends Fragment {
         listAlbum = getListAlbum(listImage);
         toolbar_album = view.findViewById(R.id.toolbar_album);
         recyclerView = view.findViewById(R.id.recyclerViewAlbum);
-        recyclerViewForOtherAlbum = view.findViewById(R.id.recyclerViewAlbumUtilities);
+        linearLayoutBtnPrivate = view.findViewById(R.id.linearLayoutBtnPrivate);
+        linearLayoutBtnTrash = view.findViewById(R.id.linearLayoutBtnTrash);
         setViewRyc();
         createToolBar();
         return view;
@@ -105,13 +109,7 @@ public class FragmentAlbum extends Fragment {
 
             }
         });
-        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
-        recyclerViewForOtherAlbum.setLayoutManager(layoutManager);
-        List<com.example.albumapp.models.MenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new com.example.albumapp.models.MenuItem(R.drawable.ic_priavte_off, getResources().getString(R.string.albumPrivate), Color.BLACK));
-        menuItems.add(new com.example.albumapp.models.MenuItem(R.drawable.ic_trash, getResources().getString(R.string.recentlydeleted), Color.BLACK));
-        menuAlbumUtiAdapter = new MenuAlbumUtiAdapter(menuItems);
-        recyclerViewForOtherAlbum.setAdapter(menuAlbumUtiAdapter);
+
     }
     private void createToolBar() {
         toolbar_album.inflateMenu(R.menu.menu_top_album);

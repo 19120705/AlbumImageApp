@@ -5,8 +5,11 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.STORAGE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.INTERNET"
         android:required="true"/>
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -44,7 +47,9 @@
             android:name=".activities.SlideShowActivity">
         </activity>
         <activity
-            android:name=".activities.PhotoActivity">
+            android:name=".activities.PhotoActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".activities.AddImageActivity">
