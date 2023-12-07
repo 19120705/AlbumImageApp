@@ -82,8 +82,6 @@ public class PhotoActivity extends AppCompatActivity {
 
         frameLayout = (FrameLayout) findViewById(R.id.frameViewPager_photo);
 
-
-        listImages = GetAllPhotoFromDisk.getImages(getApplicationContext());
         setToolbar();
         setDataIntent();
         setUpViewPaper();
@@ -119,6 +117,7 @@ public class PhotoActivity extends AppCompatActivity {
     private void setDataIntent() {
         intent = getIntent();
         pos = intent.getIntExtra("pos", 0);
+        listImages = intent.getParcelableArrayListExtra("dataImages");
         //activityPicture = this;
 
     }
