@@ -45,6 +45,7 @@
     <string name="enter">Enter</string>
     <string name="create_password">Create password</string>
     <string name="confirm_password">Confirm password</string>
+    <string name="change_password">Change password</string>
     <string name="create">Create</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="question_for_getting_back_password">Question for getting back password</string>

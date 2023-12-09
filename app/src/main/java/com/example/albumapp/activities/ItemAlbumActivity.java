@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -29,12 +32,15 @@ import com.example.albumapp.adapters.ImageSelectAdapter;
 import com.example.albumapp.adapters.ItemAlbumAdapter;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.utility.DataLocalManager;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class ItemAlbumActivity extends AppCompatActivity {
     private List<MyImage> dataImages;
@@ -145,7 +151,13 @@ public class ItemAlbumActivity extends AppCompatActivity {
 //        if(isAlbum == 0) {
 //            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(false);
 //        } else
-//            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(true);
+//            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(true);\
+        if (isSecret == 1) {
+            toolbarItemAlbum.getMenu().findItem(R.id.menu_remove_album).setVisible(false);
+        }
+        else {
+            toolbarItemAlbum.getMenu().findItem(R.id.menu_change_password).setVisible(false);
+        }
         // Show back button
         toolbarItemAlbum.setNavigationIcon(R.drawable.ic_back);
         toolbarItemAlbum.setNavigationOnClickListener(new View.OnClickListener() {
@@ -166,7 +178,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
                 else if (id == R.id.album_item_slideshow) {
                     slideShowEvents();
                 }
-               else if (id == R.id.menu_add_image) {
+                else if (id == R.id.menu_add_image) {
                     Intent intent_add = new Intent(ItemAlbumActivity.this, AddImageActivity.class);
                     intent_add.putParcelableArrayListExtra("dataImages", new ArrayList<>(dataImages));
                     intent_add.putExtra("name", albumName);
@@ -174,6 +186,9 @@ public class ItemAlbumActivity extends AppCompatActivity {
                 }
                 else if (id == R.id.menu_remove_album) {
                     deleteAlbum();
+                }
+                else if (id == R.id.menu_change_password) {
+                    showEnterPasswordDialog();
                 }
                 return true;
             }
@@ -233,6 +248,104 @@ public class ItemAlbumActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+    private void showEnterPasswordDialog() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_enter_password, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView)
+                .setPositiveButton("Enter", null)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String password = DataLocalManager.getInstance().getPassword();
+                EditText editTextPassword = dialogView.findViewById(R.id.enterPassword);
+                TextInputLayout enterPassField = dialogView.findViewById(R.id.enterPasswordField);
+                String enterPassword = editTextPassword.getText().toString().trim();
+
+                if (enterPassword.equals("")) {
+                    enterPassField.setError("Empty Input");
+                    return;
+                }
+                if (checkBcrypt(enterPassword, password)) {
+                    showChangePasswordDialog();
+                    dialog.dismiss();
+                }
+                else {
+                    enterPassField.setError("Incorrect password");
+                }
+            }
+        });
+    }
+
+    private void showChangePasswordDialog() {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_change_password, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView)
+                .setTitle("Change Password")
+                .setPositiveButton("Change Password", null)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText editNewPassword = dialogView.findViewById(R.id.newPassword);
+                EditText editConfirmPassword = dialogView.findViewById(R.id.confirmNewPassword);
+
+                TextInputLayout newPassField = dialogView.findViewById(R.id.newPasswordField);
+                TextInputLayout confirmNewPassField = dialogView.findViewById(R.id.confirmPasswordField);
+                String newPassword = editNewPassword.getText().toString().trim();
+                String confirmPassword = editConfirmPassword.getText().toString().trim();
+                if (newPassword.equals("")) {
+                    newPassField.setError("Empty Input");
+                }
+                else if (confirmPassword.equals("")) {
+                    confirmNewPassField.setError("Empty Input");
+                }
+                if (newPassword.equals("") || confirmPassword.equals("")) {
+                    return;
+                }
+
+                if (newPassword.equals(confirmPassword)) {
+                    DataLocalManager.getInstance().savePassword(hashBcrypt(newPassword));
+                    Toast.makeText(getApplicationContext(),"Password changed successfully!", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                } else {
+                    confirmNewPassField.setError("Passwords do not match.");
+                    Toast.makeText(getApplicationContext(),"Passwords do not match. Please try again.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+    private String hashBcrypt(String password) {
+        int costFactor = 12;
+
+        return BCrypt.withDefaults().hashToString(costFactor, password.toCharArray());
+    }
+
+    public boolean checkBcrypt(String plainTextPassword, String hashedPassword) {
+        return BCrypt.verifyer().verify(plainTextPassword.toCharArray(), hashedPassword).verified;
+    }
 
     private void setData() {
         dataImages = intent.getParcelableArrayListExtra("dataImages");
@@ -241,13 +354,6 @@ public class ItemAlbumActivity extends AppCompatActivity {
 //        isAlbum = intent.getIntExtra("ok",0);
 
     }
-
-//    @Override
-//    public boolean onSupportNavigateUp() {
-//        onBackPressed();
-//        return true;
-//    }
-//
 
     public class RemoveAlbumAsyncTask implements Runnable {
         String name;
@@ -265,5 +371,6 @@ public class ItemAlbumActivity extends AppCompatActivity {
             });
         }
     }
+
 
 }

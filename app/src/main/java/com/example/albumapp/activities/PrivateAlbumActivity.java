@@ -262,7 +262,8 @@ public class PrivateAlbumActivity extends AppCompatActivity {
                 }
 
                 if (newPassword.equals(confirmPassword)) {
-                    DataLocalManager.getInstance().savePassword(hashBcrypt(password));
+                    password = hashBcrypt(newPassword);
+                    DataLocalManager.getInstance().savePassword(password);
                     Toast.makeText(getApplicationContext(),"Password changed successfully!", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 } else {
