@@ -37,11 +37,22 @@
     <string name="location">Location</string>
     <string name="addprivate">Add To Private</string>
     <string name="remove_album">Remove Album</string>
-    <string name="listalbum">List album</string>
-    <string name="albumPrivate">Album Private</string>
-    <string name="recentlydeleted">Recently deleted</string>
+    <string name="list_album">List album</string>
+    <string name="album_private">Album Private</string>
+    <string name="recently_deleted">Recently deleted</string>
     <string name="utilities">Utilities</string>
-
+    <string name="enter_your_password">Enter your password</string>
+    <string name="enter">Enter</string>
+    <string name="create_password">Create password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="create">Create</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="question_for_getting_back_password">Question for getting back password</string>
+    <string name="write_your_question">Write your question</string>
+    <string name="your_answer_for_the_question_above">Your answer for the question above</string>
+    <string name="enter_new_password">Enter new password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="answer_your_question">Answer your question</string>
 
 
     <string name="simple">Simple</string>

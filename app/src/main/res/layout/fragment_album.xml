@@ -1,102 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <include
-        android:id="@+id/toolbar_album"
-        layout="@layout/layout_toolbar" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#FFD8D8D8"
-        android:layout_marginBottom="10dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/listalbum"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewAlbum"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#FFD8D8D8"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/utilities"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"/>
-
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
     <LinearLayout
-        android:id="@+id/linearLayoutBtnPrivate"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_priavte_off"
-                android:contentDescription="@null"
-                android:layout_margin="10dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/albumPrivate"
-                android:textSize="20sp"
-                android:layout_margin="10dp" />
-        </LinearLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <include
+            android:id="@+id/toolbar_album"
+            layout="@layout/layout_toolbar" />
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#FFD8D8D8"
-            android:layout_marginLeft="55dp"
             android:layout_marginBottom="10dp"/>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/linearLayoutBtnTrash"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/list_album"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewAlbum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_trash"
-                android:contentDescription="@null"
-                android:layout_margin="10dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/recentlydeleted"
-                android:textSize="20sp"
-                android:layout_margin="10dp" />
-        </LinearLayout>
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp" />
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#FFD8D8D8"
-            android:layout_marginLeft="55dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"/>
-    </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/utilities"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"/>
 
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayoutBtnPrivate"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onPrivateAlbumClicked">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_priavte_off"
+                    android:contentDescription="@null"
+                    android:layout_margin="10dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/album_private"
+                    android:textSize="20sp"
+                    android:layout_margin="10dp" />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#FFD8D8D8"
+                android:layout_marginLeft="55dp"
+                android:layout_marginBottom="10dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayoutBtnTrash"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onTrashClicked">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_trash"
+                    android:contentDescription="@null"
+                    android:layout_margin="10dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recently_deleted"
+                    android:textSize="20sp"
+                    android:layout_margin="10dp" />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#FFD8D8D8"
+                android:layout_marginLeft="55dp"
+                android:layout_marginBottom="10dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

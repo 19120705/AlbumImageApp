@@ -50,6 +50,7 @@ dependencies {
 
 //    implementation ("com.github.denzcoskun:ImageSlideshow:0.1.2")
     implementation ("com.github.smarteist:autoimageslider:1.4.0")
+    implementation ("at.favre.lib:bcrypt:0.10.2")
 
 
 }

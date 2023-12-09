@@ -1,8 +1,6 @@
 package com.example.albumapp.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,13 +15,12 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.albumapp.activities.CreateAlbumActivity;
+import com.example.albumapp.activities.PrivateAlbumActivity;
 import com.example.albumapp.adapters.AlbumAdapter;
-import com.example.albumapp.adapters.MenuAdapter;
 import com.example.albumapp.adapters.MenuAlbumUtiAdapter;
 import com.example.albumapp.models.MyAlbum;
 import com.example.albumapp.models.MyImage;
@@ -60,6 +57,12 @@ public class FragmentAlbum extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewAlbum);
         linearLayoutBtnPrivate = view.findViewById(R.id.linearLayoutBtnPrivate);
         linearLayoutBtnTrash = view.findViewById(R.id.linearLayoutBtnTrash);
+        linearLayoutBtnPrivate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPrivateAlbumClicked(v);
+            }
+        });
         setViewRyc();
         createToolBar();
         return view;
@@ -199,6 +202,12 @@ public class FragmentAlbum extends Fragment {
 
     private void openCreateAlbumActivity() {
         Intent _intent = new Intent(view.getContext(), CreateAlbumActivity.class);
+        _intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        view.getContext().startActivity(_intent);
+    }
+
+    public void onPrivateAlbumClicked(View view) {
+        Intent _intent = new Intent(view.getContext(), PrivateAlbumActivity.class);
         _intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         view.getContext().startActivity(_intent);
     }

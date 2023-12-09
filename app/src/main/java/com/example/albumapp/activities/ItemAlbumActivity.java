@@ -76,7 +76,6 @@ public class ItemAlbumActivity extends AppCompatActivity {
 
                     if (Objects.equals(requestCode, "ADD")) {
                         List<MyImage> resultList = data.getParcelableArrayListExtra("list_result");
-                        Log.e("TAG", "onActivityResult: " + Integer.toString(resultList.size()));
                         if(!resultList.isEmpty()) {
                             dataImages.addAll(resultList);
                             recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
@@ -92,25 +91,28 @@ public class ItemAlbumActivity extends AppCompatActivity {
 //                            }
 //                        }
 //                    }
-//                    if (result.getResultCode() == RESULT_OK && requestCode == REQUEST_CODE_SECRET) {
-////            MyAsyncTask myAsyncTask = new MyAsyncTask();
-////            myAsyncTask.execute();
+//                    else if (Objects.equals(requestCode, "PRIVATE")) {
+//                        List<MyImage> resultList = data.getParcelableArrayListExtra("dataImages");
+//            myAsyncTask.execute();
 //                    }
-                    if (Objects.equals(requestCode, "PHOTO")) {
-                        String path_img = data.getStringExtra("path_img");
-                        if(isSecret == 1) {
-                            dataImages.remove(path_img);
-                        }else if (duplicateImg == 2){
-                            dataImages.remove(path_img);
-                        }
-                        recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
-                    }
+//                    if (Objects.equals(requestCode, "PHOTO")) {
+//                        String path_img = data.getStringExtra("path_img");
+//                        if(isSecret == 1) {
+//                            dataImages.remove(path_img);
+//                        }else if (duplicateImg == 2){
+//                            dataImages.remove(path_img);
+//                        }
+//                        recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
+//                    }
                 }
             });
 
     private void setRyc() {
         albumName = intent.getStringExtra("name");
         recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
+        if (dataImages.isEmpty()) {
+            return;
+        }
         itemAlbumAdapter = new ItemAlbumAdapter(dataImages,  spanCount);
         recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
     }
@@ -192,6 +194,9 @@ public class ItemAlbumActivity extends AppCompatActivity {
             spanCount++;
         }
         recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
+        if (itemAlbumAdapter == null) {
+            return;
+        }
         recyclerView.setAdapter(itemAlbumAdapter);
         itemAlbumAdapter.setSpanCount(spanCount);
 

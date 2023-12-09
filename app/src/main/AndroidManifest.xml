@@ -54,6 +54,9 @@
         <activity
             android:name=".activities.AddImageActivity">
         </activity>
+        <activity
+            android:name=".activities.PrivateAlbumActivity">
+        </activity>
     </application>
 
 </manifest>

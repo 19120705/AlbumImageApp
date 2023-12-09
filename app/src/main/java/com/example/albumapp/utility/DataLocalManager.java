@@ -12,14 +12,17 @@ import java.util.Set;
 public class DataLocalManager {
     private static final String MY_ALBUM = "MY_ALBUM";
     private static final String MY_SHARED_PREFERENCES = "MY_SHARED_PREFERENCES";
+    private static final String MY_SECRET_ALBUM = "MY_SECRET_ALBUM";
     private static DataLocalManager instance;
     private SharedPreferences sharedPreferences;
     private SharedPreferences albumData;
+    private SharedPreferences secretInfo;
 
     public static void init(Context context){
         instance = new DataLocalManager();
         instance.sharedPreferences = context.getSharedPreferences(MY_SHARED_PREFERENCES,Context.MODE_PRIVATE);
         instance.albumData = context.getSharedPreferences(MY_ALBUM,Context.MODE_PRIVATE);
+        instance.secretInfo = context.getSharedPreferences(MY_SECRET_ALBUM,Context.MODE_PRIVATE);
     }
 
     public static DataLocalManager getInstance(){
@@ -39,14 +42,6 @@ public class DataLocalManager {
         SharedPreferences.Editor editor = instance.albumData.edit();
         editor.remove(albumName);
         editor.apply();
-    }
-
-    public void setListImgByList(String key, List<String> listImg){
-        Set<String> setListImg = new HashSet<>();
-
-        setListImg.addAll(listImg);
-        saveAlbum(key,setListImg);
-
     }
 
     public List<String> getAlbumImages(String albumName){
@@ -78,5 +73,43 @@ public class DataLocalManager {
         if(instance.sharedPreferences != null)
             return instance.sharedPreferences.getInt("span_count", 3);
         else return 3;
+    }
+
+    public void savePassword(String password){
+        SharedPreferences.Editor editor = instance.secretInfo.edit();
+        editor.putString("password", password);
+        editor.apply();
+    }
+    public void saveQuestion(String password){
+        SharedPreferences.Editor editor = instance.secretInfo.edit();
+        editor.putString("question", password);
+        editor.apply();
+    }
+    public void saveAnswer(String password){
+        SharedPreferences.Editor editor = instance.secretInfo.edit();
+        editor.putString("answer", password);
+        editor.apply();
+    }
+
+    public String getPassword(){
+        return instance.secretInfo.getString("password", "");
+    }
+    public String getQuestion(){
+        return instance.secretInfo.getString("question", "");
+    }
+    public String getAnswer(){
+        return instance.secretInfo.getString("answer", "");
+    }
+
+    public void addImageToSecret(String image){
+        SharedPreferences.Editor editor = instance.secretInfo.edit();
+        Set<String> secretAlbum = getSecretAlbum();
+        secretAlbum.add(image);
+        editor.putStringSet("Secret Album", secretAlbum);
+        editor.apply();
+    }
+
+    public Set<String> getSecretAlbum(){
+        return instance.secretInfo.getStringSet("Secret Album", new HashSet<>());
     }
 }
