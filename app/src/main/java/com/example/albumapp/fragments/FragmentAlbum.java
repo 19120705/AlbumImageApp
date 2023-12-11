@@ -29,6 +29,7 @@ import com.example.albumapp.R;
 import com.example.albumapp.utility.DataLocalManager;
 import com.example.albumapp.utility.GetAllPhotoFromDisk;
 
+import java.io.File;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -62,7 +63,7 @@ public class FragmentAlbum extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_album, container, false);
-        listImage = GetAllPhotoFromDisk.getImages(view.getContext());
+        listImage = GetAllPhotoFromDisk.getSelectiveImages(view.getContext());
         listAlbum = getListAlbum(listImage);
         toolbar_album = view.findViewById(R.id.toolbar_album);
         recyclerView = view.findViewById(R.id.recyclerViewAlbum);
@@ -228,13 +229,14 @@ public class FragmentAlbum extends Fragment {
         view.getContext().startActivity(_intent);
     }
     public void onTrashAlbumClicked(View view) {
+        List<MyImage> listImages = GetAllPhotoFromDisk.getImages(getContext());
         Map<String, ?> allEntries = DataLocalManager.getInstance().getTrash();
         allEntries = deleteTrash(allEntries);
         ArrayList<MyImage> dataImages = new ArrayList<>();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
-            for (int j = 0; j < listImage.size(); j++) {
+            for (int j = 0; j < listImages.size(); j++) {
                 if (Objects.equals(entry.getKey(), listImage.get(j).getPath())) {
-                    dataImages.add(listImage.get(j));
+                    dataImages.add(listImages.get(j));
                 }
             }
         }
@@ -260,6 +262,11 @@ public class FragmentAlbum extends Fragment {
 
             long diffDays = diff.toDays();
             if (diffDays > 300) {
+                File file = new File(entry.getKey());
+                file.delete();
+                if(file.exists()){
+                    getContext().deleteFile(file.getName());
+                }
                 DataLocalManager.getInstance().removeImageTrash(entry.getKey());
                 data.remove(entry.getKey());
             }

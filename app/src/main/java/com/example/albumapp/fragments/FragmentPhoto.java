@@ -312,7 +312,7 @@ public class FragmentPhoto extends Fragment {
     private List<MyCategory> getListCategory() {
         List<MyCategory> categoryList = new ArrayList<>();
         int categoryCount = 0;
-        listImages = GetAllPhotoFromDisk.getImages(getContext());
+        listImages = GetAllPhotoFromDisk.getSelectiveImages(getContext());
 
 
         try {

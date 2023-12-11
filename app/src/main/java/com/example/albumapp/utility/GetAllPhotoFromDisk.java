@@ -15,8 +15,34 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 public class GetAllPhotoFromDisk {
+    public static List<MyImage> getSelectiveImages(Context context) {
+        List<MyImage> listImages = getImages(context);
+        Map<String, ?> imagePathTrash = DataLocalManager.getInstance().getTrash();
+        ArrayList<String> listPrivate = new ArrayList<>();
+        listPrivate.addAll(DataLocalManager.getInstance().getPrivateAlbum());
+        for(int i = 0; i < listImages.size(); i++) {
+            for (Map.Entry<String, ?> entry : imagePathTrash.entrySet()) {
+                if (Objects.equals(entry.getKey(), listImages.get(i).getPath())) {
+                    listImages.remove(listImages.get(i));
+                    i--;
+                    break;
+                }
+            }
+            for (int j = 0; j < listPrivate.size(); j++) {
+                if (Objects.equals(listPrivate.get(j), listImages.get(i).getPath())) {
+                    listImages.remove(listImages.get(i));
+                    i--;
+                    break;
+                }
+            }
+        }
+        return listImages;
+    }
     public static List<MyImage> getImages(Context context) {
         Uri collection;
 
