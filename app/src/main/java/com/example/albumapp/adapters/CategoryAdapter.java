@@ -1,5 +1,6 @@
 package com.example.albumapp.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import java.util.List;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>{
     private Context context;
     private List<MyCategory> listCategories;
+    private int spanCount;
 
     public CategoryAdapter(Context context) {
         this.context = context;
@@ -28,6 +30,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    public void setSpanCount(int spanCount) {
+        this.spanCount = spanCount;
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -43,10 +50,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         holder.textViewCategoryName.setText(category.getNameCategory());
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 3);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(context, spanCount);
         holder.recyclerViewCategories.setLayoutManager(gridLayoutManager);
 
         ImageAdapter imageAdapter = new ImageAdapter(context.getApplicationContext());
+        imageAdapter.setSpanCount(spanCount);
         imageAdapter.setListImages(category.getListImages());
         imageAdapter.setListCategory(listCategories);
         holder.recyclerViewCategories.setAdapter(imageAdapter);

@@ -19,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +45,7 @@ import com.example.albumapp.adapters.ImageAdapter;
 import com.example.albumapp.R;
 import com.example.albumapp.models.MyCategory;
 import com.example.albumapp.models.MyImage;
+import com.example.albumapp.utility.DataLocalManager;
 import com.example.albumapp.utility.GetAllPhotoFromDisk;
 
 import java.text.SimpleDateFormat;
@@ -66,11 +70,13 @@ public class FragmentPhoto extends Fragment {
     private Uri imageUri;
     private String imageurl;
     private Bitmap thumbnail;
+    private int spanCount;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        spanCount = 3;
         mActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -141,6 +147,7 @@ public class FragmentPhoto extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         categoryAdapter.setListCategories(getListCategory());
+        categoryAdapter.setSpanCount(spanCount);
         recyclerView.setAdapter(categoryAdapter);
     }
     private void setupToolBarPhoto(){
@@ -201,7 +208,42 @@ public class FragmentPhoto extends Fragment {
 //        datePickerDialog.show();
 //    }
 
-    public void changeSpanCount(){}
+    private void changeSpanCount() {
+        if(spanCount >= 4) {
+            spanCount = 1;
+        }
+        else {
+            spanCount++;
+        }
+        //recyclerView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
+        if (categoryAdapter == null) {
+            return;
+        }
+        categoryAdapter.setSpanCount(spanCount);
+        recyclerView.setAdapter(categoryAdapter);
+
+        animationRyc();
+    }
+    private void animationRyc() {
+        switch(spanCount) {
+        case 1:
+            Animation animation1 = AnimationUtils.loadAnimation(getContext().getApplicationContext(),R.anim.anim_layout_ryc_1);
+            recyclerView.setAnimation(animation1);
+        case 2:
+            Animation animation2 = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.anim_layout_ryc_1);
+            recyclerView.setAnimation(animation2);
+            break;
+        case 3:
+            Animation animation3 = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.anim_layout_ryc_2);
+            recyclerView.setAnimation(animation3);
+            break;
+        case 4:
+            Animation animation4 = AnimationUtils.loadAnimation(getContext().getApplicationContext(), R.anim.anim_layout_ryc_3);
+            recyclerView.setAnimation(animation4);
+            break;
+        }
+    }
+
     public String getRealPathFromURI(Uri contentUri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = getActivity().managedQuery(contentUri, proj, null, null, null);

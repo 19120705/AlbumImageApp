@@ -21,16 +21,47 @@
             android:layout_height="match_parent" />
     </FrameLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation_photo"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        app:itemIconTint="?attr/colorOnBackground"
-        app:itemTextColor="@color/custom_color_bottom_nav"
-        app:elevation="16dp"
-        app:labelVisibilityMode="unlabeled"
-        android:background="?attr/colorOnPrimary"
-        app:menu="@menu/menu_bottom_photo"
-        />
+        android:layout_height="1dp"
+        android:background="#FFD8D8D8" />
+    <LinearLayout
+        android:id="@+id/layoutButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:weightSum="1.0"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/btnShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_share"
+            android:onClick="onShareClick"
+            android:layout_weight="0.25"/>
+
+        <ImageView
+            android:id="@+id/btnEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit"
+            android:onClick="onEditClick"
+            android:layout_weight="0.25"/>
+
+        <ImageView
+            android:id="@+id/btnFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_favorite"
+            android:onClick="onStarClick"
+            android:layout_weight="0.25"/>
+
+        <ImageView
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_trash"
+            android:onClick="onDeleteClick"
+            android:layout_weight="0.25"/>
+    </LinearLayout>
 </LinearLayout>
