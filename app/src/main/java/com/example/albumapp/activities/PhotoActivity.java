@@ -3,6 +3,7 @@ package com.example.albumapp.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
@@ -15,6 +16,7 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -22,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,19 +56,21 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
 
     private ViewPager viewPager;
     private Toolbar toolbar;
-    private BottomNavigationView bottomNavigationView;
     private FrameLayout frameLayout;
     private List<MyImage> listImages;
     private Intent intent;
     private String thumb;
     private String imgPath;
     private String imageName;
+    private LinearLayout layoutButton;
+    private ImageView btnShare, btnEdit, btnFavorite, btnDelete;
 
     private SlideImageAdapter slideImageAdapter;
     private PhotoInterface activityPhoto;
 
     private int pos;
-    public static List<String> imageListFavorite = DataLocalManager.getInstance().getAlbumImages("Favorite");
+    public static List<String> imageListFavorite = DataLocalManager.getInstance()
+            .getAlbumImages("Favorite");
     @Override
     protected void onResume() {
         super.onResume();
@@ -86,10 +91,10 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
 //
 //        events();
 
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_photo);
 
         frameLayout = (FrameLayout) findViewById(R.id.frameViewPager_photo);
 
+        layoutButton = (LinearLayout) findViewById(R.id.layoutButton);
         setToolbar();
         setDataIntent();
         setUpViewPaper();
@@ -148,11 +153,13 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
                 toolbar.setTitle(imageName);
                 if(!checkImgInFavorite(imgPath)){
                     Log.e("checkFavorite", "onNavigationItemSelected: No favorite");
-                    bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite);
+                    btnFavorite.setImageResource(R.drawable.ic_favorite);
+                    //bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite);
                 }
                 else{
                     Log.e("checkFavorite", "onNavigationItemSelected: favorite");
-                    bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite_select);
+                    btnFavorite.setImageResource(R.drawable.ic_favorite_select);
+                    //bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite_select);
                 }
             }
 
@@ -167,60 +174,61 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
         });
     }
     private void setBottomNavigationView(){
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        btnShare = (ImageView) findViewById(R.id.btnShare);
+        btnEdit = (ImageView) findViewById(R.id.btnEdit);
+        btnFavorite = (ImageView) findViewById(R.id.btnFavorite);
+        btnDelete = (ImageView) findViewById(R.id.btnDelete);
+
+        Uri targetUri =Uri.parse("file://" + thumb);
+        btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Uri targetUri =Uri.parse("file://" + thumb);
-                if(item.getItemId()==R.id.sharePic)
-                {
-                    if(thumb.contains("gif")){
-                        Intent share = new Intent(Intent.ACTION_SEND);
-                        share.setType("image/*");
-                        share.putExtra(Intent.EXTRA_STREAM, targetUri);
-                        startActivity( Intent.createChooser(share, "Share this image to your friends!") );
-                    }
-                    else {
-                        Drawable mDrawable = Drawable.createFromPath(imgPath);
-                        Bitmap mBitmap = ((BitmapDrawable) mDrawable).getBitmap();
-                        String path = MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "Image Description", null);
-                        thumb = thumb.replaceAll(" ", "");
-
-                        Uri uri = Uri.parse(path);
-                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                        shareIntent.setType("image/*");
-                        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                        startActivity(Intent.createChooser(shareIntent, "Share Image"));
-                    }
+            public void onClick(View v) {
+                if(thumb.contains("gif")){
+                    Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("image/*");
+                    share.putExtra(Intent.EXTRA_STREAM, targetUri);
+                    startActivity( Intent.createChooser(share, "Share this image to your friends!") );
                 }
-                else if(item.getItemId()==R.id.editPic)
-                {}
-                else if(item.getItemId()==R.id.starPic)
-                {
-                    if(!imageListFavorite.add(imgPath)){
-                        imageListFavorite.remove(imgPath);
-                    }
+                else {
+                    Drawable mDrawable = Drawable.createFromPath(imgPath);
+                    Bitmap mBitmap = ((BitmapDrawable) mDrawable).getBitmap();
+                    String path = MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "Image Description", null);
+                    thumb = thumb.replaceAll(" ", "");
 
-                    Set<String> setListImgFavorite = new HashSet<>();
-                    for (String i: imageListFavorite) {
-                        setListImgFavorite.add(i);
-                    }
-                    DataLocalManager.getInstance().saveAlbum("Favorite",setListImgFavorite);
-                    Toast.makeText(PhotoActivity.this, imageListFavorite.size()+"", Toast.LENGTH_SHORT).show();
-                    if(!checkImgInFavorite(imgPath)){
-                        Log.e("checkFavorite", "onNavigationItemSelected: No favorite");
-                        bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite);
-                    }
-                    else{
-                        Log.e("checkFavorite", "onNavigationItemSelected: favorite");
-                        bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite_select);
-
-                    }
+                    Uri uri = Uri.parse(path);
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("image/*");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                    startActivity(Intent.createChooser(shareIntent, "Share Image"));
                 }
-                else if(item.getItemId()==R.id.deletePic)
-                {}
-                return true;
             }
         });
+
+        btnFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!checkImgInFavorite(imgPath)){
+                    Log.e("checkFavorite", "onNavigationItemSelected: No favorite");
+
+                    imageListFavorite.add(imgPath);
+                    btnFavorite.setImageResource(R.drawable.ic_favorite_select);
+                    //bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite);
+                }
+                else{
+                    Log.e("checkFavorite", "onNavigationItemSelected: favorite");
+                    imageListFavorite.remove(imgPath);
+                    btnFavorite.setImageResource(R.drawable.ic_favorite);
+                    //bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite_select);
+                }
+                Set<String> setListImgFavorite = new HashSet<>();
+                for (String i: imageListFavorite) {
+                    setListImgFavorite.add(i);
+                }
+                DataLocalManager.getInstance().saveAlbum("Favorite",setListImgFavorite);
+                Toast.makeText(PhotoActivity.this, imageListFavorite.size()+"", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
     public Boolean checkImgInFavorite(String  Path){
         for (String img: imageListFavorite) {
@@ -330,10 +338,12 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
 
     private void showNavigation(boolean flag) {
         if (!flag) {
-            bottomNavigationView.setVisibility(View.INVISIBLE);
+            layoutButton.setVisibility(View.GONE);
+            //bottomNavigationView.setVisibility(View.INVISIBLE);
             toolbar.setVisibility(View.INVISIBLE);
         } else {
-            bottomNavigationView.setVisibility(View.VISIBLE);
+            layoutButton.setVisibility(View.VISIBLE);
+            //bottomNavigationView.setVisibility(View.VISIBLE);
             toolbar.setVisibility(View.VISIBLE);
         }
     }

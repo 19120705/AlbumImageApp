@@ -41,6 +41,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     private Context context;
     private List<MyCategory> listCategories;
     private List<MyImage> listImages;
+    private int spanCount;
 
     private Intent intent;
     public ImageAdapter(Context context) {
@@ -52,6 +53,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     }
     public void setListImages(List<MyImage> listImages) {
         this.listImages = listImages;
+        notifyDataSetChanged();
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    public void setSpanCount(int spanCount) {
+        this.spanCount = spanCount;
         notifyDataSetChanged();
     }
     @Override
@@ -145,6 +151,26 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         public ImageViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_item_imageView);
+            ViewGroup.LayoutParams layoutParam = imageView.getLayoutParams();
+            if (spanCount == 1) {
+                layoutParam.width = 1300;
+                layoutParam.height = 1300;
+            }
+            if (spanCount == 2) {
+                layoutParam.width = 650;
+                layoutParam.height = 650;
+            }
+
+            if (spanCount == 3) {
+                layoutParam.width = 455;
+                layoutParam.height = 455;
+            }
+            if (spanCount == 4) {
+                layoutParam.width = 350;
+                layoutParam.height = 350;
+            }
+
+            imageView.setLayoutParams(layoutParam);
         }
     }
 
