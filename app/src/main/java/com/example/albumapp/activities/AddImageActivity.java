@@ -35,6 +35,7 @@ public class AddImageActivity extends AppCompatActivity{
     private Intent intent;
     private ArrayList<MyImage> dataImages;
     private String albumName;
+    private int isPrivate;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class AddImageActivity extends AppCompatActivity{
         listImageSelected = new ArrayList<>();
         albumName = intent.getStringExtra("name");
         dataImages = intent.getParcelableArrayListExtra("dataImages");
+        isPrivate = intent.getIntExtra("isPrivate", 0);
     }
     private void event() {
         img_back_create_album.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +121,12 @@ public class AddImageActivity extends AppCompatActivity{
                 }
             }
 
-            DataLocalManager.getInstance().saveAlbum(albumName, imageListFavor);
+            if (isPrivate == 1) {
+                DataLocalManager.getInstance().savePrivateAlbum(imageListFavor);
+            }
+            else {
+                DataLocalManager.getInstance().saveAlbum(albumName, imageListFavor);
+            }
 
              // Update UI on the main thread
             new Handler(Looper.getMainLooper()).post(new Runnable() {

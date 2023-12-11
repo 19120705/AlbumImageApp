@@ -115,7 +115,7 @@ public class PrivateAlbumActivity extends AppCompatActivity {
     public void accessSecret(){
         Intent intent = new Intent(getApplicationContext(), ItemAlbumActivity.class);
         ArrayList<String> list = new ArrayList<>();
-        list.addAll(DataLocalManager.getInstance().getSecretAlbum());
+        list.addAll(DataLocalManager.getInstance().getPrivateAlbum());
         List<MyImage> allImages = GetAllPhotoFromDisk.getImages(getApplicationContext());
         ArrayList dataImages = new ArrayList<>();
         for (int i = 0; i < list.size(); i++){
@@ -127,8 +127,8 @@ public class PrivateAlbumActivity extends AppCompatActivity {
         }
 
         intent.putParcelableArrayListExtra("dataImages", dataImages);
-        intent.putExtra("name", "Secret Album");
-        intent.putExtra("isSecret", 1);
+        intent.putExtra("name", "Private Album");
+        intent.putExtra("isPrivate", 1);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         this.getApplicationContext().startActivity(intent);
     }

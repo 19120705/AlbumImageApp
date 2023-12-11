@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,17 +27,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.albumapp.R;
-import com.example.albumapp.adapters.ImageSelectAdapter;
 import com.example.albumapp.adapters.ItemAlbumAdapter;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.utility.DataLocalManager;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
@@ -50,7 +46,8 @@ public class ItemAlbumActivity extends AppCompatActivity {
     Toolbar toolbarItemAlbum;
     private ItemAlbumAdapter itemAlbumAdapter;
     private int spanCount;
-    private int isSecret;
+    private int isPrivate;
+    private int isTrash;
     private int duplicateImg;
     private int isAlbum;
 
@@ -120,6 +117,9 @@ public class ItemAlbumActivity extends AppCompatActivity {
             return;
         }
         itemAlbumAdapter = new ItemAlbumAdapter(dataImages,  spanCount);
+        if (isTrash == 1) {
+            itemAlbumAdapter.turnOffClickable();
+        }
         recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
     }
 
@@ -151,12 +151,20 @@ public class ItemAlbumActivity extends AppCompatActivity {
 //        if(isAlbum == 0) {
 //            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(false);
 //        } else
-//            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(true);\
-        if (isSecret == 1) {
+//            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(true);
+        if (isPrivate == 1) {
             toolbarItemAlbum.getMenu().findItem(R.id.menu_remove_album).setVisible(false);
         }
-        else {
+        else if (isPrivate == 0){
             toolbarItemAlbum.getMenu().findItem(R.id.menu_change_password).setVisible(false);
+        }
+        if (isTrash == 1) {
+            toolbarItemAlbum.getMenu().findItem(R.id.menu_remove_album).setVisible(false);
+            toolbarItemAlbum.getMenu().findItem(R.id.album_item_slideshow).setVisible(false);
+            toolbarItemAlbum.getMenu().findItem(R.id.menu_add_image).setVisible(false);
+        }
+        else {
+            toolbarItemAlbum.getMenu().findItem(R.id.menu_put_back).setVisible(false);
         }
         // Show back button
         toolbarItemAlbum.setNavigationIcon(R.drawable.ic_back);
@@ -182,6 +190,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
                     Intent intent_add = new Intent(ItemAlbumActivity.this, AddImageActivity.class);
                     intent_add.putParcelableArrayListExtra("dataImages", new ArrayList<>(dataImages));
                     intent_add.putExtra("name", albumName);
+                    intent_add.putExtra("isPrivate", 1);
                     someActivityResultLauncher.launch(intent_add);
                 }
                 else if (id == R.id.menu_remove_album) {
@@ -193,12 +202,8 @@ public class ItemAlbumActivity extends AppCompatActivity {
                 return true;
             }
         });
-        if(isSecret == 1)
-            hideMenu();
-    }
-
-    private void hideMenu() {
-        toolbarItemAlbum.getMenu().findItem(R.id.menu_add_image).setVisible(false);
+        if(isPrivate == 1)
+            toolbarItemAlbum.getMenu().findItem(R.id.menu_add_image).setVisible(false);
     }
 
     private void spanCountEvent() {
@@ -349,7 +354,8 @@ public class ItemAlbumActivity extends AppCompatActivity {
 
     private void setData() {
         dataImages = intent.getParcelableArrayListExtra("dataImages");
-        isSecret = intent.getIntExtra("isSecret", 0);
+        isPrivate = intent.getIntExtra("isPrivate", 0);
+        isTrash = intent.getIntExtra("isTrash", 0);
         duplicateImg = intent.getIntExtra("duplicateImg",0);
 //        isAlbum = intent.getIntExtra("ok",0);
 
