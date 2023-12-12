@@ -40,6 +40,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.albumapp.activities.MultiSelectPhotoActivity;
+import com.example.albumapp.activities.PhotoActivity;
 import com.example.albumapp.adapters.CategoryAdapter;
 import com.example.albumapp.adapters.ImageAdapter;
 import com.example.albumapp.R;
@@ -163,6 +165,11 @@ public class FragmentPhoto extends Fragment {
                 else if(id == R.id.menuCamera)
                 {
                     eventCamera();
+                }
+                else if(id == R.id.menuFilter)
+                {
+                    Intent intent = new Intent(context, MultiSelectPhotoActivity.class);
+                    startActivity(intent);
                 }
 //                    case R.id.menuSearch:
 //

@@ -1,7 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:orientation="vertical"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/toolbar_photo"
+        layout="@layout/layout_toolbar"
+        android:background="@color/white" />
+    <FrameLayout
+        android:id="@+id/frameLayoutActivityMain"
+        android:layout_width="match_parent"
+        android:layout_height="652dp"
+        android:layout_weight="1">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        />
+    </FrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#FFD8D8D8" />
+    <LinearLayout
+        android:id="@+id/layoutButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:weightSum="1.0"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/btnShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_share"
+            android:onClick="onShareClick"
+            android:layout_weight="0.25"/>
+
+        <ImageView
+            android:id="@+id/btnEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit"
+            android:onClick="onEditClick"
+            android:layout_weight="0.25"/>
+
+        <ImageView
+            android:id="@+id/btnFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_favorite"
+            android:onClick="onStarClick"
+            android:layout_weight="0.25"/>
+
+        <ImageView
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_trash"
+            android:onClick="onDeleteClick"
+            android:layout_weight="0.25"/>
+    </LinearLayout>
 </LinearLayout>
