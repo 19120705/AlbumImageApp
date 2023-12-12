@@ -24,11 +24,17 @@ import java.util.List;
 public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.ItemAlbumViewHolder> {
     private List<MyImage> listImages;
     private ImageView imgPhoto;
+    private boolean isItemClickable;
     private int spanCount;
 
     public ItemAlbumAdapter(List<MyImage> list, int spanCount) {
         this.listImages = list;
         this.spanCount = spanCount;
+        isItemClickable = true;
+    }
+
+    public void turnOffClickable() {
+        isItemClickable = false;
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -98,6 +104,9 @@ public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.Item
             imgPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (!isItemClickable) {
+                        return;
+                    }
                     Intent intent = new Intent(context, PhotoActivity.class);
                     intent.putParcelableArrayListExtra("dataImages", new ArrayList<>(listImages));
                     intent.putExtra("pos", pos);
