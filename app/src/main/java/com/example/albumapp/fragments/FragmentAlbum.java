@@ -22,7 +22,6 @@ import com.example.albumapp.activities.CreateAlbumActivity;
 import com.example.albumapp.activities.ItemAlbumActivity;
 import com.example.albumapp.activities.PrivateAlbumActivity;
 import com.example.albumapp.adapters.AlbumAdapter;
-import com.example.albumapp.adapters.MenuAlbumUtiAdapter;
 import com.example.albumapp.models.MyAlbum;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.R;
@@ -41,7 +40,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class FragmentAlbum extends Fragment {
@@ -55,7 +53,6 @@ public class FragmentAlbum extends Fragment {
     private androidx.appcompat.widget.Toolbar toolbar_album;
     private List<MyAlbum> listAlbum;
     private AlbumAdapter albumAdapter;
-    private MenuAlbumUtiAdapter menuAlbumUtiAdapter;
     private ViewPager2 viewPager2;
     public FragmentAlbum(ViewPager2 viewPager2) {
         this.viewPager2 = viewPager2;

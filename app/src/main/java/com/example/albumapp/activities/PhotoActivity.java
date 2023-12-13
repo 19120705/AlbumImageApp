@@ -1,5 +1,6 @@
 package com.example.albumapp.activities;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +21,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -68,6 +73,9 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
     private SlideImageAdapter slideImageAdapter;
     private PhotoInterface activityPhoto;
 
+    private Uri imageUri;
+    private ActivityResultLauncher<Intent> shareLauncher;
+
     private int pos;
     public static List<String> imageListFavorite = DataLocalManager.getInstance()
             .getAlbumImages("Favorite");
@@ -81,6 +89,17 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
 
+        shareLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                            // Người dùng đã hủy việc chia sẻ, xóa hình ảnh
+                            getContentResolver().delete(imageUri, null, null);
+                        }
+                    }
+                });
 
 //        //Fix Uri file SDK link: https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi?answertab=oldest#tab-top
 //        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -101,7 +120,6 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
         setBottomNavigationView();
 
     }
-
 
     private void setToolbar(){
         toolbar = findViewById(R.id.toolbar_photo);
@@ -195,11 +213,11 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
                     String path = MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "Image Description", null);
                     thumb = thumb.replaceAll(" ", "");
 
-                    Uri uri = Uri.parse(path);
+                    imageUri = Uri.parse(path);
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("image/*");
-                    shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                    startActivity(Intent.createChooser(shareIntent, "Share Image"));
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                    shareLauncher.launch(Intent.createChooser(shareIntent, "Share Image"));
                 }
             }
         });

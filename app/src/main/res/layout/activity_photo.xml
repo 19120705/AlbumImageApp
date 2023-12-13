@@ -18,7 +18,8 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager_photo"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            />
     </FrameLayout>
 
     <View
@@ -35,33 +36,49 @@
         <ImageView
             android:id="@+id/btnShare"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:src="@drawable/ic_share"
-            android:onClick="onShareClick"
+            android:focusable="true"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:layout_weight="0.25"/>
 
         <ImageView
             android:id="@+id/btnEdit"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:src="@drawable/ic_edit"
-            android:onClick="onEditClick"
+            android:focusable="true"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:layout_weight="0.25"/>
 
         <ImageView
             android:id="@+id/btnFavorite"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:src="@drawable/ic_favorite"
-            android:onClick="onStarClick"
+            android:focusable="true"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:layout_weight="0.25"/>
 
         <ImageView
             android:id="@+id/btnDelete"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:src="@drawable/ic_trash"
-            android:onClick="onDeleteClick"
+            android:focusable="true"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:layout_weight="0.25"/>
     </LinearLayout>
 </LinearLayout>
