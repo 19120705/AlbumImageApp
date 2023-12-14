@@ -11,6 +11,11 @@ public class MyImage implements Parcelable {
     private String dateTaken;
     private String make; //Trường lưu thông tin máy ảnh
 
+    public MyImage() {
+    }
+    public MyImage(String path) {
+        this.path = path;
+    }
     protected MyImage(Parcel in) {
         path = in.readString();
         thumb = in.readString();
@@ -34,8 +39,7 @@ public class MyImage implements Parcelable {
         return path;
     }
 
-    public MyImage() {
-    }
+
 
     public void setPath(String path) {
         this.path = path;
@@ -49,9 +53,6 @@ public class MyImage implements Parcelable {
         this.thumb = thumb;
     }
 
-    public MyImage(String path) {
-        this.path = path;
-    }
 
     public String getDateTaken() {
         return dateTaken;

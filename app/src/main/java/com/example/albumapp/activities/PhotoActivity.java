@@ -4,20 +4,15 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -25,7 +20,6 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import android.widget.FrameLayout;
@@ -42,17 +36,17 @@ import com.example.albumapp.R;
 import com.example.albumapp.adapters.SlideImageAdapter;
 import com.example.albumapp.models.MyImage;
 import com.example.albumapp.utility.DataLocalManager;
-import com.example.albumapp.utility.GetAllPhotoFromDisk;
 import com.example.albumapp.utility.PhotoInterface;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -74,7 +68,7 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
     private PhotoInterface activityPhoto;
 
     private Uri imageUri;
-    private ActivityResultLauncher<Intent> shareLauncher;
+    private ActivityResultLauncher<Intent> shareLauncher, deleteImageLauncher;
 
     private int pos;
     public static List<String> imageListFavorite = DataLocalManager.getInstance()
@@ -89,6 +83,10 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
 
+        String currentDateString = getCurrentDateFormatted("yyyy-M-dd");
+        Log.e("12345", "onCreate date: " + currentDateString );
+        Log.e("12345", "onCreate: "+ convertDateStringToLong(currentDateString, "yyyy-M-dd"));
+        DataLocalManager.getInstance().saveTrash(imgPath,convertDateStringToLong(currentDateString, "yyyy-M-dd"));
         shareLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -101,6 +99,21 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
                     }
                 });
 
+        deleteImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            int deletedPosition = data.getIntExtra("deletedPosition", -1);
+                            if (deletedPosition != -1) {
+                                listImages.remove(deletedPosition);
+                                slideImageAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                }
+        );
 //        //Fix Uri file SDK link: https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi?answertab=oldest#tab-top
 //        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
 //        StrictMode.setVmPolicy(builder.build());
@@ -165,6 +178,7 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                pos = position;
                 thumb = listImages.get(position).getThumb();
                 imgPath = listImages.get(position).getPath();
                 imageName = thumb.substring(thumb.lastIndexOf('/') + 1);
@@ -172,12 +186,10 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
                 if(!checkImgInFavorite(imgPath)){
                     Log.e("checkFavorite", "onNavigationItemSelected: No favorite");
                     btnFavorite.setImageResource(R.drawable.ic_favorite);
-                    //bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite);
                 }
                 else{
                     Log.e("checkFavorite", "onNavigationItemSelected: favorite");
                     btnFavorite.setImageResource(R.drawable.ic_favorite_select);
-                    //bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite_select);
                 }
             }
 
@@ -222,6 +234,45 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
             }
         });
 
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(PhotoActivity.this);
+
+                builder.setTitle("Confirm");
+                builder.setMessage("Do you want to delete this image?");
+
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(PhotoActivity.this, PhotoActivity.class);
+                            intent.putExtra("deletedPosition", pos);
+                            deleteImageLauncher.launch(intent);
+//                            if (file.delete()) {
+//                                GetAllPhotoFromGallery.removeImageFromAllImages(targetUri.getPath());
+
+                            Toast.makeText(PhotoActivity.this, "Delete successfully: " + targetUri.getPath(), Toast.LENGTH_SHORT).show();
+//                            } else
+//                                Toast.makeText(PictureActivity.this, "Delete failed: " + targetUri.getPath(), Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        // Do nothing
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
         btnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -368,5 +419,21 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
     @Override
     public void actionShow(boolean flag) {
         showNavigation(flag);
+    }
+
+    private static String getCurrentDateFormatted(String dateFormat) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        return sdf.format(new Date());
+    }
+
+    private static long convertDateStringToLong(String dateString, String dateFormat) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+            Date date = sdf.parse(dateString);
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return -1; // Handle the exception appropriately
+        }
     }
 }

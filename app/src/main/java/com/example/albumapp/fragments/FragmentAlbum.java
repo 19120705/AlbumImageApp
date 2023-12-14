@@ -2,6 +2,7 @@ package com.example.albumapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -29,7 +30,7 @@ import com.example.albumapp.utility.DataLocalManager;
 import com.example.albumapp.utility.GetAllPhotoFromDisk;
 
 import java.io.File;
-import java.sql.Date;
+import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
