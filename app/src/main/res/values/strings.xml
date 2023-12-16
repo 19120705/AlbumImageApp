@@ -55,6 +55,8 @@
     <string name="confirm_new_password">Confirm new password</string>
     <string name="answer_your_question">Answer your question</string>
     <string name="put_back">Put back</string>
+    <string name="multi_select">Multi Select</string>
+    <string name="cancel">Cancel</string>
 
 
     <string name="simple">Simple</string>

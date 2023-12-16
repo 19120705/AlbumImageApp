@@ -30,6 +30,7 @@ import java.util.List;
 public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.ImageSelectHolder> {
     private List<MyImage> listImages;
     private List<MyImage> listSelectedImages;
+    private OnImageSelectChangeListener onImageSelectChangeListener;
     boolean isMultiSelect;
     private Context context;
     public ImageSelectAdapter(Context context, boolean isMultiSelect) {
@@ -37,6 +38,9 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
         this.isMultiSelect = isMultiSelect;
     }
 
+    public void setOnImageSelectChangeListener(OnImageSelectChangeListener listener) {
+        this.onImageSelectChangeListener = listener;
+    }
     public void setData(List<MyImage> listImages) {
         this.listImages = listImages;
         this.listSelectedImages = new ArrayList<>();
@@ -63,16 +67,29 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
         return 0;
     }
 
+    public int getSelectedItemCount() {
+        if(listSelectedImages !=null)
+            return listSelectedImages.size();
+        return 0;
+    }
     public List<MyImage> getListSelectedImage() {
         return listSelectedImages;
     }
 
+
+    private void onImageSelectChanged() {
+        if (onImageSelectChangeListener != null) {
+            onImageSelectChangeListener.onImageSelectChanged(getSelectedItemCount());
+        }
+    }
     public void addList(MyImage image) {
         listSelectedImages.add(image);
+        onImageSelectChanged();
     }
 
     public void removeList(MyImage image) {
         listSelectedImages.remove(image);
+        onImageSelectChanged();
     }
 
     public class ImageSelectHolder extends RecyclerView.ViewHolder {
@@ -130,5 +147,9 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
                 }
             });
         }
+    }
+
+    public interface OnImageSelectChangeListener {
+        void onImageSelectChanged(int selectedCount);
     }
 }

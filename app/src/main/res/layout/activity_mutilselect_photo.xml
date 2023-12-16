@@ -4,10 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/toolbar_photo"
-        layout="@layout/layout_toolbar"
-        android:background="@color/white" />
+    <Button
+        android:id="@+id/btnCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:layout_gravity="right"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        />
     <FrameLayout
         android:id="@+id/frameLayoutActivityMain"
         android:layout_width="match_parent"
@@ -36,32 +41,40 @@
             android:id="@+id/btnShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_share"
-            android:onClick="onShareClick"
-            android:layout_weight="0.25"/>
-
-        <ImageView
-            android:id="@+id/btnEdit"
+            android:paddingVertical="12dp"
+            android:src="@drawable/ic_ios_share"
+            android:focusable="true"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_weight="0.2"/>
+        <TextView
+            android:id="@+id/textViewNumberImageSelected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_edit"
-            android:onClick="onEditClick"
-            android:layout_weight="0.25"/>
-
-        <ImageView
-            android:id="@+id/btnFavorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_favorite"
-            android:onClick="onStarClick"
-            android:layout_weight="0.25"/>
+            android:text="Select image"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_weight="0.5"/>
 
         <ImageView
             android:id="@+id/btnDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_trash"
-            android:onClick="onDeleteClick"
-            android:layout_weight="0.25"/>
+            android:paddingVertical="12dp"
+            android:focusable="true"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_weight="0.1"/>
+        <ImageView
+            android:id="@+id/btnMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_more_vert"
+            android:paddingVertical="12dp"
+            android:focusable="true"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_weight="0.1"/>
     </LinearLayout>
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
@@ -32,6 +33,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.dsphotoeditor.sdk.activity.DsPhotoEditorActivity;
+import com.dsphotoeditor.sdk.utils.DsPhotoEditorConstants;
 import com.example.albumapp.R;
 import com.example.albumapp.adapters.SlideImageAdapter;
 import com.example.albumapp.models.MyImage;
@@ -68,7 +71,7 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
     private PhotoInterface activityPhoto;
 
     private Uri imageUri;
-    private ActivityResultLauncher<Intent> shareLauncher, deleteImageLauncher;
+    private ActivityResultLauncher<Intent> shareLauncher;
 
     private int pos;
     public static List<String> imageListFavorite = DataLocalManager.getInstance()
@@ -83,10 +86,17 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
 
-        String currentDateString = getCurrentDateFormatted("yyyy-M-dd");
-        Log.e("12345", "onCreate date: " + currentDateString );
-        Log.e("12345", "onCreate: "+ convertDateStringToLong(currentDateString, "yyyy-M-dd"));
-        DataLocalManager.getInstance().saveTrash(imgPath,convertDateStringToLong(currentDateString, "yyyy-M-dd"));
+
+
+//        //Fix Uri file SDK link: https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi?answertab=oldest#tab-top
+//        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+//        StrictMode.setVmPolicy(builder.build());
+//
+//
+//        mappingControls();
+//
+//        events();
+
         shareLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -99,30 +109,20 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
                     }
                 });
 
-        deleteImageLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            int deletedPosition = data.getIntExtra("deletedPosition", -1);
-                            if (deletedPosition != -1) {
-                                listImages.remove(deletedPosition);
-                                slideImageAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    }
-                }
-        );
-//        //Fix Uri file SDK link: https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi?answertab=oldest#tab-top
-//        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-//        StrictMode.setVmPolicy(builder.build());
+//        deleteImageLauncher = registerForActivityResult(
+//                new ActivityResultContracts.StartActivityForResult(),
+//                result -> {
+//                    if (result.getResultCode() == RESULT_OK) {
+//                        Intent data = result.getData();
+//                        if (data != null) {
+//                            int deletedPosition = data.getIntExtra("deletedPosition", -1);
+//                            if (deletedPosition != -1) {
 //
-//
-//        mappingControls();
-//
-//        events();
-
+//                            }
+//                        }
+//                    }
+//                }
+//        );
 
         frameLayout = (FrameLayout) findViewById(R.id.frameViewPager_photo);
 
@@ -131,6 +131,11 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
         setDataIntent();
         setUpViewPaper();
         setBottomNavigationView();
+
+//        String currentDateString = getCurrentDateFormatted("yyyy-M-dd");
+//        Log.e("12345", "onCreate date: " + currentDateString );
+//        Log.e("12345", "onCreate: "+ convertDateStringToLong(currentDateString, "yyyy-M-dd"));
+//        Log.e("12345", "onCreate imgpath: "+ imgPath);
 
     }
 
@@ -164,6 +169,7 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
         intent = getIntent();
         pos = intent.getIntExtra("pos", 0);
         listImages = intent.getParcelableArrayListExtra("dataImages");
+        imgPath = listImages.get(pos).getPath();
         activityPhoto = this;
 
     }
@@ -184,11 +190,9 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
                 imageName = thumb.substring(thumb.lastIndexOf('/') + 1);
                 toolbar.setTitle(imageName);
                 if(!checkImgInFavorite(imgPath)){
-                    Log.e("checkFavorite", "onNavigationItemSelected: No favorite");
                     btnFavorite.setImageResource(R.drawable.ic_favorite);
                 }
                 else{
-                    Log.e("checkFavorite", "onNavigationItemSelected: favorite");
                     btnFavorite.setImageResource(R.drawable.ic_favorite_select);
                 }
             }
@@ -234,6 +238,29 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
             }
         });
 
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editIntent = new Intent(PhotoActivity.this, DsPhotoEditorActivity.class);
+
+                if(imgPath.contains("gif")){
+                    Toast.makeText(PhotoActivity.this,"Cannot edit GIF images",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    // Set data
+                    editIntent.setData(Uri.fromFile(new File(imgPath)));
+                    // Set output directory
+                    editIntent.putExtra(DsPhotoEditorConstants.DS_PHOTO_EDITOR_OUTPUT_DIRECTORY, "AlbumApp");
+                    // Set toolbar color
+                    editIntent.putExtra(DsPhotoEditorConstants.DS_TOOL_BAR_BACKGROUND_COLOR, Color.parseColor("#FF000000"));
+                    // Set background color
+                    editIntent.putExtra(DsPhotoEditorConstants.DS_MAIN_BACKGROUND_COLOR, Color.parseColor("#FF000000"));
+                    // Start activity
+                    startActivity(editIntent);
+                }
+            }
+        });
+
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,16 +273,13 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(PhotoActivity.this, PhotoActivity.class);
-                            intent.putExtra("deletedPosition", pos);
-                            deleteImageLauncher.launch(intent);
-//                            if (file.delete()) {
-//                                GetAllPhotoFromGallery.removeImageFromAllImages(targetUri.getPath());
-
-                            Toast.makeText(PhotoActivity.this, "Delete successfully: " + targetUri.getPath(), Toast.LENGTH_SHORT).show();
-//                            } else
-//                                Toast.makeText(PictureActivity.this, "Delete failed: " + targetUri.getPath(), Toast.LENGTH_SHORT).show();
+                        String currentDateString = getCurrentDateFormatted("yyyy-M-dd");
+                        DataLocalManager.getInstance().saveTrash(imgPath,convertDateStringToLong(currentDateString, "yyyy-M-dd"));
+                        listImages.remove(pos);
+                        slideImageAdapter.notifyDataSetChanged();
+                        Toast.makeText(PhotoActivity.this, "Delete successfully: " + targetUri.getPath(), Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
+                        finish();
                     }
                 });
 
@@ -277,17 +301,12 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
             @Override
             public void onClick(View v) {
                 if(!checkImgInFavorite(imgPath)){
-                    Log.e("checkFavorite", "onNavigationItemSelected: No favorite");
-
                     imageListFavorite.add(imgPath);
                     btnFavorite.setImageResource(R.drawable.ic_favorite_select);
-                    //bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite);
                 }
                 else{
-                    Log.e("checkFavorite", "onNavigationItemSelected: favorite");
                     imageListFavorite.remove(imgPath);
                     btnFavorite.setImageResource(R.drawable.ic_favorite);
-                    //bottomNavigationView.getMenu().getItem(2).setIcon(R.drawable.ic_favorite_select);
                 }
                 Set<String> setListImgFavorite = new HashSet<>();
                 for (String i: imageListFavorite) {

@@ -1,9 +1,12 @@
 package com.example.albumapp.adapters;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -12,9 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -26,9 +32,15 @@ import com.example.albumapp.R;
 import com.example.albumapp.activities.PhotoActivity;
 import com.example.albumapp.models.MyCategory;
 import com.example.albumapp.models.MyImage;
+import com.example.albumapp.utility.DataLocalManager;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private Context context;
@@ -36,6 +48,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     private List<MyImage> listImages;
     private int spanCount;
 
+    private  List<String> imageListFavorite = DataLocalManager.getInstance()
+            .getAlbumImages("Favorite");
     private Intent intent;
     public ImageAdapter(Context context) {
         this.context = context;
@@ -56,9 +70,20 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     @Override
     public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_item, parent, false);
+
+
         return new ImageViewHolder(view);
     }
 
+
+    public Boolean checkImgInFavorite(String  Path){
+        for (String img: imageListFavorite) {
+            if(img.equals(Path)){
+                return true;
+            }
+        }
+        return false;
+    }
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, @SuppressLint("RecyclerView")int position) {
         Glide.with(context)
@@ -94,7 +119,22 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                 // Đặt nội dung cho Dialog từ một layout XML
                 dialog.setContentView(R.layout.dialog_layout_photo);
                 dialog.setCanceledOnTouchOutside(true);
+
+                LinearLayout btnShare = dialog.findViewById(R.id.btnShare);
+                LinearLayout btnFavorite = dialog.findViewById(R.id.btnFavorite);
+                LinearLayout btnAddToAlbum = dialog.findViewById(R.id.btnAddToAlbum);
+                LinearLayout btnAddToPrivate = dialog.findViewById(R.id.btnPrivate);
+                LinearLayout btnDelete = dialog.findViewById(R.id.btnDelete);
                 LinearLayout linearLayout = dialog.findViewById(R.id.dialog_layout_photo);
+                ImageView iconFavorite = dialog.findViewById(R.id.iconFavorite);
+
+
+
+                String imgPath = listImages.get(position).getPath();
+
+                if(checkImgInFavorite(imgPath)){
+                    iconFavorite.setImageResource(R.drawable.ic_favorite_select);
+                }
                 linearLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -107,24 +147,80 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                         .load(listImages.get(position).getThumb())
                         .into(dialogImageView);
 
+                btnShare.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-//                RecyclerView recyclerView = dialog.findViewById(R.id.recyclerView);
-//                LinearLayoutManager layoutManager = new LinearLayoutManager(v.getContext());
-//                recyclerView.setLayoutManager(layoutManager);
-//                List<MenuItem> menuItems = new ArrayList<>();
-//                menuItems.add(new MenuItem(R.drawable.ic_ios_share,v.getResources().getString(R.string.share) , Color.BLACK));
-//                menuItems.add(new MenuItem(R.drawable.ic_favorite, v.getResources().getString(R.string.favorite), Color.BLACK));
-//                menuItems.add(new MenuItem(R.drawable.ic_add_photos, v.getResources().getString(R.string.addAlbum), Color.BLACK));
-//                menuItems.add(new MenuItem(R.drawable.ic_priavte_off, v.getResources().getString(R.string.addprivate), Color.BLACK));
-//                menuItems.add(new MenuItem(R.drawable.ic_trash_red, v.getResources().getString(R.string.delete), Color.RED));
-//                MenuAdapter adapter = new MenuAdapter(menuItems);
-//                recyclerView.setAdapter(adapter);
-//
-//                // Thêm DividerItemDecoration vào RecyclerView
-//                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(v.getContext(), R.drawable.divider);
-//                recyclerView.addItemDecoration(dividerItemDecoration);
-//                recyclerView.setBackgroundResource(R.drawable.background_recyclerview_menu);
+                    }
+                });
+                btnFavorite.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
+                        Log.e("1234567", "onClickFavorite: "+imgPath );
+                        if(!checkImgInFavorite(imgPath)){
+                            imageListFavorite.add(imgPath);
+                        }
+                        else{
+                            imageListFavorite.remove(imgPath);
+                        }
+                        Set<String> setListImgFavorite = new HashSet<>();
+                        for (String i: imageListFavorite) {
+                            setListImgFavorite.add(i);
+                        }
+                        DataLocalManager.getInstance().saveAlbum("Favorite",setListImgFavorite);
+                        dialog.dismiss();
+                    }
+                });
+
+                btnAddToAlbum.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                btnAddToPrivate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Set<String> privateAlbum = new HashSet<>();
+                        privateAlbum.add(imgPath);
+                        DataLocalManager.getInstance().savePrivateAlbum(privateAlbum);
+                        dialog.dismiss();
+                    }
+                });
+                btnDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(dialog.getContext());
+
+                        builder.setTitle("Confirm");
+                        builder.setMessage("Do you want to delete this image?");
+
+                        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int which) {
+                                String currentDateString = getCurrentDateFormatted("yyyy-M-dd");
+                                DataLocalManager.getInstance().saveTrash(imgPath,convertDateStringToLong(currentDateString, "yyyy-M-dd"));
+                                dialog.dismiss();
+                            }
+                        });
+
+                        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                // Do nothing
+                                dialog.dismiss();
+                            }
+                        });
+
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                        dialog.dismiss();
+                    }
+                });
                 // Hiển thị Dialog
                 dialog.show();
                 return true;
@@ -132,11 +228,28 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         });
     }
 
+
     @Override
     public int getItemCount() {
         if (listImages != null)
             return listImages.size();
         return 0;
+    }
+
+    private static String getCurrentDateFormatted(String dateFormat) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        return sdf.format(new Date());
+    }
+
+    private static long convertDateStringToLong(String dateString, String dateFormat) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+            Date date = sdf.parse(dateString);
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return -1; // Handle the exception appropriately
+        }
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {

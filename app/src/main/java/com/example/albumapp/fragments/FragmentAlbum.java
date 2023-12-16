@@ -233,7 +233,7 @@ public class FragmentAlbum extends Fragment {
         ArrayList<MyImage> dataImages = new ArrayList<>();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
             for (int j = 0; j < listImages.size(); j++) {
-                if (Objects.equals(entry.getKey(), listImage.get(j).getPath())) {
+                if (Objects.equals(entry.getKey(), listImages.get(j).getPath())) {
                     dataImages.add(listImages.get(j));
                 }
             }
@@ -247,8 +247,8 @@ public class FragmentAlbum extends Fragment {
     }
     private Map<String, ?> deleteTrash(Map<String, ?> data) {
         for (Map.Entry<String, ?> entry : data.entrySet()) {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
-            Date dateDelete = new Date(TimeUnit.SECONDS.toMillis((long) entry.getValue()));
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date dateDelete = new Date((long) entry.getValue());
             String strDateDelete = dateFormat.format(dateDelete);
 
             Date dateCurrent = (Date) Calendar.getInstance().getTime();

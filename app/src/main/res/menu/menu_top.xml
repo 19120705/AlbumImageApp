@@ -14,6 +14,12 @@
         app:showAsAction="ifRoom|collapseActionView"
         android:iconTint="?attr/colorOnBackground"/>
 
+    <item android:id="@+id/menuMultiSelectPhoto"
+        android:title="@string/multi_select"
+        android:icon="@drawable/ic_filter"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:iconTint="?attr/colorOnBackground"/>
+
     <item android:id="@+id/menuFilter"
         android:title="@string/filter"
         android:icon="@drawable/ic_filter"

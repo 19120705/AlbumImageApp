@@ -166,7 +166,7 @@ public class FragmentPhoto extends Fragment {
                 {
                     eventCamera();
                 }
-                else if(id == R.id.menuFilter)
+                else if(id == R.id.menuMultiSelectPhoto)
                 {
                     Intent intent = new Intent(context, MultiSelectPhotoActivity.class);
                     startActivity(intent);
@@ -198,22 +198,6 @@ public class FragmentPhoto extends Fragment {
         });
     }
 
-//    private void eventSearch(@NonNull MenuItem item) {
-//        final Calendar calendar = Calendar.getInstance();
-//        int day = calendar.get(Calendar.DATE);
-//        int month = calendar.get(Calendar.MONTH);
-//        int year = calendar.get(Calendar.YEAR);
-//        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-//            @Override
-//            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-//                calendar.set(i, i1, i2);
-//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-//                String date = simpleDateFormat.format(calendar.getTime());
-//                //showImageByDate(date);
-//            }
-//        }, year, month, day);
-//        datePickerDialog.show();
-//    }
 
     private void changeSpanCount() {
         if(spanCount >= 4) {
@@ -320,7 +304,6 @@ public class FragmentPhoto extends Fragment {
         List<MyCategory> categoryList = new ArrayList<>();
         int categoryCount = 0;
         listImages = GetAllPhotoFromDisk.getSelectiveImages(getContext());
-
 
         try {
             categoryList.add(new MyCategory(listImages.get(0).getDateTaken(), new ArrayList<>()));
