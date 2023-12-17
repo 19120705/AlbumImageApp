@@ -87,6 +87,14 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
         onImageSelectChanged();
     }
 
+    public void updateData(List<MyImage> newData) {
+        this.listImages = newData;
+        notifyDataSetChanged();
+    }
+    public void clearSelections() {
+        listSelectedImages.clear();
+        notifyDataSetChanged();
+    }
     public void removeList(MyImage image) {
         listSelectedImages.remove(image);
         onImageSelectChanged();
@@ -113,6 +121,13 @@ public class ImageSelectAdapter extends RecyclerView.Adapter<ImageSelectAdapter.
 
             // set ảnh cho imgPhoto bằng thư viện Glide
             Glide.with(context).load(image.getThumb()).into(imgPhoto);
+            if (listSelectedImages.contains(image)) {
+                imgPhoto.setImageAlpha(100);
+                iconTick.setVisibility(View.VISIBLE);
+            } else {
+                imgPhoto.setImageAlpha(255);
+                iconTick.setVisibility(View.INVISIBLE);
+            }
             imgPhoto.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {

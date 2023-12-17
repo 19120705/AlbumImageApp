@@ -33,6 +33,8 @@ public class GetAllPhotoFromDisk {
                     break;
                 }
             }
+        }
+        for(int i = 0; i < listImages.size(); i++) {
             for (int j = 0; j < listPrivate.size(); j++) {
                 if (Objects.equals(listPrivate.get(j), listImages.get(i).getPath())) {
                     listImages.remove(listImages.get(i));
