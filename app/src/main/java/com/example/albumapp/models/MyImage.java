@@ -63,7 +63,11 @@ public class MyImage implements Parcelable {
     }
 
     public String getMake() {
-        return make;
+        if (make == null) {
+            return "No Webcam";
+        } else {
+            return make;
+        }
     }
 
     public void setMake(String make) {

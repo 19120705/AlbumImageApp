@@ -149,6 +149,7 @@ public class FragmentPhoto extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         categoryAdapter.setListCategories(getListCategory());
+//        categoryAdapter.setListCategories(getListCategoryTitleMake());
         categoryAdapter.setSpanCount(spanCount);
         recyclerView.setAdapter(categoryAdapter);
     }
@@ -253,7 +254,6 @@ public class FragmentPhoto extends Fragment {
         public void run() {
             //doInBackground
             listCategory = getListCategory();
-
             // Update UI on the main thread
             //onPostExecute
             new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -311,6 +311,28 @@ public class FragmentPhoto extends Fragment {
             for (int i = 1; i < listImages.size(); i++) {
                 if (!listImages.get(i).getDateTaken().equals(listImages.get(i - 1).getDateTaken())) {
                     categoryList.add(new MyCategory(listImages.get(i).getDateTaken(), new ArrayList<>()));
+                    categoryCount++;
+                }
+                categoryList.get(categoryCount).addItemToListImages(listImages.get(i));
+            }
+            return categoryList;
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+    @NonNull
+    private List<MyCategory> getListCategoryTitleMake() {
+        List<MyCategory> categoryList = new ArrayList<>();
+        int categoryCount = 0;
+        listImages = GetAllPhotoFromDisk.getSelectiveImages(getContext());
+
+        try {
+            categoryList.add(new MyCategory(listImages.get(0).getMake(), new ArrayList<>()));
+            categoryList.get(categoryCount).addItemToListImages(listImages.get(0));
+            for (int i = 1; i < listImages.size(); i++) {
+                if (!listImages.get(i).getMake().equals(listImages.get(i - 1).getMake())) {
+                    categoryList.add(new MyCategory(listImages.get(i).getMake(), new ArrayList<>()));
                     categoryCount++;
                 }
                 categoryList.get(categoryCount).addItemToListImages(listImages.get(i));

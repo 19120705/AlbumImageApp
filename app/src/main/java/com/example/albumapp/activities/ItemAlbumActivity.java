@@ -190,7 +190,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
                     Intent intent_add = new Intent(ItemAlbumActivity.this, AddImageActivity.class);
                     intent_add.putParcelableArrayListExtra("dataImages", new ArrayList<>(dataImages));
                     intent_add.putExtra("name", albumName);
-                    intent_add.putExtra("isPrivate", 1);
+                    intent_add.putExtra("isPrivate", 0);
                     someActivityResultLauncher.launch(intent_add);
                 }
                 else if (id == R.id.menu_remove_album) {
