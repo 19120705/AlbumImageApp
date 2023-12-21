@@ -41,6 +41,12 @@ public class DataLocalManager {
         editor.apply();
     }
 
+    public  void saveImageToAlbum(String albumName, String imagePath)
+    {
+        Set<String> strJsonArray = instance.albumData.getStringSet(albumName, new HashSet<>());
+        strJsonArray.add(imagePath);
+        saveAlbum(albumName,strJsonArray);
+    }
     public void removeAlbum(String albumName){
         SharedPreferences.Editor editor = instance.albumData.edit();
         editor.remove(albumName);

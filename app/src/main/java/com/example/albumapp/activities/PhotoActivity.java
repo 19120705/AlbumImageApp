@@ -31,13 +31,18 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.dsphotoeditor.sdk.activity.DsPhotoEditorActivity;
 import com.dsphotoeditor.sdk.utils.DsPhotoEditorConstants;
 import com.example.albumapp.R;
+import com.example.albumapp.adapters.AlbumSelectAdapter;
 import com.example.albumapp.adapters.SlideImageAdapter;
+import com.example.albumapp.models.MyAlbum;
 import com.example.albumapp.models.MyImage;
+import com.example.albumapp.utility.AlbumInterface;
 import com.example.albumapp.utility.DataLocalManager;
 import com.example.albumapp.utility.PhotoInterface;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -54,7 +59,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
+public class PhotoActivity extends AppCompatActivity implements PhotoInterface, AlbumInterface {
 
     private ViewPager viewPager;
     private Toolbar toolbar;
@@ -72,7 +77,8 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
 
     private Uri imageUri;
     private ActivityResultLauncher<Intent> shareLauncher;
-
+    private RecyclerView recycleViewListAlbum;
+    private BottomSheetDialog bottomSheetDialog;
     private int pos;
     public static List<String> imageListFavorite = DataLocalManager.getInstance()
             .getAlbumImages("Favorite");
@@ -159,6 +165,9 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
                     if (targetUri != null) {
                         showInformation(targetUri);
                     }
+                }
+                else if(id==R.id.menuAddToAlbum){
+                    openBottomDialogAddImageToAlbum();
                 }
                 return true;
             }
@@ -318,6 +327,18 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
         });
 
     }
+    private void openBottomDialogAddImageToAlbum() {
+        View viewDialog = LayoutInflater.from(PhotoActivity.this).inflate(R.layout.layout_button_recyclerview_add_image_to_album, null);
+        recycleViewListAlbum = viewDialog.findViewById(R.id.ryc_album);
+        recycleViewListAlbum.setLayoutManager(new GridLayoutManager(this, 2));
+
+        bottomSheetDialog = new BottomSheetDialog(PhotoActivity.this);
+        bottomSheetDialog.setContentView(viewDialog);
+        new Thread(new MyRunnable(this)).start();
+//        MyAsyncTask myAsyncTask = new MyAsyncTask();
+//        myAsyncTask.execute();
+
+    }
     public Boolean checkImgInFavorite(String  Path){
         for (String img: imageListFavorite) {
             if(img.equals(Path)){
@@ -438,6 +459,66 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface{
     @Override
     public void actionShow(boolean flag) {
         showNavigation(flag);
+    }
+    @Override
+    public void add(MyAlbum album) {
+        new Thread(new AddAlbumRunnable(this, album)).start();
+    }
+    public class AddAlbumRunnable implements Runnable {
+        private MyAlbum album;
+        private PhotoActivity photoActivity;
+
+        public AddAlbumRunnable(PhotoActivity photoActivity, MyAlbum album) {
+            this.photoActivity = photoActivity;
+            this.album = album;
+        }
+
+        @Override
+        public void run() {
+            DataLocalManager.getInstance().saveImageToAlbum(album.getName(), imgPath);
+            photoActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    bottomSheetDialog.cancel();
+                }
+            });
+        }
+    }
+    public class MyRunnable implements Runnable {
+        private AlbumSelectAdapter albumSelectAdapter;
+        private List<MyAlbum> listAlbum;
+        private List<String> listAlbumNames;
+        private PhotoActivity photoActivity;
+
+        public MyRunnable(PhotoActivity photoActivity) {
+            this.photoActivity = photoActivity;
+            listAlbumNames = DataLocalManager.getInstance().getAllAlbum();
+            listAlbum = new ArrayList<>();
+        }
+
+        @Override
+        public void run() {
+            for(int i =0 ;i <listAlbumNames.size();i++)
+            {
+                List<String> listImagePath = DataLocalManager.getInstance().getAlbumImages(listAlbumNames.get(i));
+
+                List<MyImage> listImage = new ArrayList<>();
+                for(int j=0; j<listImagePath.size();j++)
+                {
+                    listImage.add(new MyImage(listImagePath.get(j)));
+                }
+                listAlbum.add(new MyAlbum(listImage,listAlbumNames.get(i)));
+            }
+            photoActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    albumSelectAdapter = new AlbumSelectAdapter(listAlbum, photoActivity);
+                    albumSelectAdapter.setAlbumInterface(photoActivity);
+                    recycleViewListAlbum.setAdapter(albumSelectAdapter);
+                    bottomSheetDialog.show();
+                }
+            });
+        }
     }
 
     private static String getCurrentDateFormatted(String dateFormat) {

@@ -98,15 +98,15 @@ public class ItemAlbumActivity extends AppCompatActivity {
 //                        List<MyImage> resultList = data.getParcelableArrayListExtra("dataImages");
 //            myAsyncTask.execute();
 //                    }
-//                    if (Objects.equals(requestCode, "PHOTO")) {
+                    if (Objects.equals(requestCode, "PHOTO")) {
 //                        String path_img = data.getStringExtra("path_img");
-//                        if(isSecret == 1) {
+//                        if(isPrivate == 1) {
 //                            dataImages.remove(path_img);
 //                        }else if (duplicateImg == 2){
 //                            dataImages.remove(path_img);
 //                        }
-//                        recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
-//                    }
+                        recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
+                    }
                 }
             });
 
@@ -190,7 +190,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
                     Intent intent_add = new Intent(ItemAlbumActivity.this, AddImageActivity.class);
                     intent_add.putParcelableArrayListExtra("dataImages", new ArrayList<>(dataImages));
                     intent_add.putExtra("name", albumName);
-                    intent_add.putExtra("isPrivate", 0);
+                    intent_add.putExtra("isPrivate", isPrivate);
                     someActivityResultLauncher.launch(intent_add);
                 }
                 else if (id == R.id.menu_remove_album) {

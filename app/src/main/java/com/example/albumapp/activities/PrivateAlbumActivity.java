@@ -25,6 +25,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
@@ -117,11 +118,15 @@ public class PrivateAlbumActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), ItemAlbumActivity.class);
         ArrayList<String> list = new ArrayList<>();
         list.addAll(DataLocalManager.getInstance().getPrivateAlbum());
+        for(int i = 0; i<list.size();i++)
+        {
+            Log.e("1234567", "accessSecret: "+list.get(i));
+        }
         List<MyImage> allImages = GetAllPhotoFromDisk.getImages(getApplicationContext());
-        ArrayList dataImages = new ArrayList<>();
+        ArrayList<MyImage> dataImages = new ArrayList<>();
         for (int i = 0; i < list.size(); i++){
             for (int j = 0; j < allImages.size(); j++) {
-                if (list.get(i) == allImages.get(j).getPath()) {
+                if (Objects.equals(list.get(i), allImages.get(j).getPath())) {
                     dataImages.add(allImages.get(i));
                 }
             }

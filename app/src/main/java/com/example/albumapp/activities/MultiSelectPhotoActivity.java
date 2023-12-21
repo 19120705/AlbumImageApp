@@ -186,13 +186,16 @@ public class MultiSelectPhotoActivity extends AppCompatActivity implements Image
                 // Handle menu item clicks here
                 if(itemId==R.id.add_to_album)
                 {
+                    listImageSelected = adapter.getListSelectedImage();
 
                     return true;
                 }
                 else if(itemId==R.id.album_item_slideshow)
                 {
+                    listImageSelected = adapter.getListSelectedImage();
                     Intent intent_show = new Intent(MultiSelectPhotoActivity.this, SlideShowActivity.class);
                     ArrayList<MyImage> listImages = new ArrayList<>(listImageSelected);
+                    //Log.e("1234567", "onMenuItemClick: slide show "+listImages.get(0).getPath() );
                     intent_show.putParcelableArrayListExtra("dataImages", listImages);
                     intent_show.putExtra("name", "Slide show");
                     intent_show.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
