@@ -110,7 +110,6 @@ public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.Item
                     Intent intent = new Intent(context, PhotoActivity.class);
                     intent.putParcelableArrayListExtra("dataImages", new ArrayList<>(listImages));
                     intent.putExtra("pos", pos);
-
                     ((Activity) context).startActivityForResult(intent, 10);
                 }
             });

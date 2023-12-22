@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -92,17 +93,6 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
 
-
-
-//        //Fix Uri file SDK link: https://stackoverflow.com/questions/48117511/exposed-beyond-app-through-clipdata-item-geturi?answertab=oldest#tab-top
-//        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-//        StrictMode.setVmPolicy(builder.build());
-//
-//
-//        mappingControls();
-//
-//        events();
-
         shareLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -115,20 +105,6 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface, 
                     }
                 });
 
-//        deleteImageLauncher = registerForActivityResult(
-//                new ActivityResultContracts.StartActivityForResult(),
-//                result -> {
-//                    if (result.getResultCode() == RESULT_OK) {
-//                        Intent data = result.getData();
-//                        if (data != null) {
-//                            int deletedPosition = data.getIntExtra("deletedPosition", -1);
-//                            if (deletedPosition != -1) {
-//
-//                            }
-//                        }
-//                    }
-//                }
-//        );
 
         frameLayout = (FrameLayout) findViewById(R.id.frameViewPager_photo);
 
@@ -137,11 +113,6 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface, 
         setDataIntent();
         setUpViewPaper();
         setBottomNavigationView();
-
-//        String currentDateString = getCurrentDateFormatted("yyyy-M-dd");
-//        Log.e("12345", "onCreate date: " + currentDateString );
-//        Log.e("12345", "onCreate: "+ convertDateStringToLong(currentDateString, "yyyy-M-dd"));
-//        Log.e("12345", "onCreate imgpath: "+ imgPath);
 
     }
 
@@ -168,6 +139,15 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface, 
                 }
                 else if(id==R.id.menuAddToAlbum){
                     openBottomDialogAddImageToAlbum();
+                }
+                else if(id==R.id.menuSetWallpaper)
+                {
+                    File file = new File(imgPath);
+                    Uri uri = FileProvider.getUriForFile(PhotoActivity.this, getApplicationContext().getPackageName() + ".provider", file);
+                    Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Cấp quyền đọc URI cho Intent
+                    intent.setDataAndType(uri, "image/*");
+                    startActivity(Intent.createChooser(intent, "Set as:"));
                 }
                 return true;
             }
