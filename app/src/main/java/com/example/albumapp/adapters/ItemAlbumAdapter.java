@@ -35,6 +35,7 @@ public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.Item
 
     public void turnOffClickable() {
         isItemClickable = false;
+        notifyDataSetChanged();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -59,7 +60,7 @@ public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.Item
 
     @Override
     public void onBindViewHolder(@NonNull ItemAlbumViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.onBind(listImages.get(position), position);
+        holder.onBind(listImages.get(position), position, isItemClickable);
     }
 
     @Override
@@ -97,14 +98,14 @@ public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.Item
 
         }
 
-        public void onBind(MyImage image, int pos) {
+        public void onBind(MyImage image, int pos, boolean clickable) {
             // set ảnh cho imgPhoto bằng thư viện Glide
             Glide.with(context).load(image.getPath()).into(imgPhoto);
 
             imgPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!isItemClickable) {
+                    if (!clickable) {
                         return;
                     }
                     Intent intent = new Intent(context, PhotoActivity.class);

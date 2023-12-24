@@ -62,7 +62,7 @@ public class PutBackActivity extends AppCompatActivity{
         listImage = intent.getParcelableArrayListExtra("dataImages");
         ImageSelectAdapter imageAdapter = new ImageSelectAdapter(this, true);
         imageAdapter.setData(listImage);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         recyclerView.setAdapter(imageAdapter);
     }
 
