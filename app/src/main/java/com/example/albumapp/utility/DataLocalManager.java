@@ -12,7 +12,7 @@ import java.util.Set;
 public class DataLocalManager {
     private static final String MY_ALBUM = "MY_ALBUM";
     private static final String MY_SHARED_PREFERENCES = "MY_SHARED_PREFERENCES";
-    private static final String MY_SECRET_ALBUM = "MY_SECRET_ALBUM";
+    private static final String MY_PRIVATE_ALBUM = "MY_PRIVATE_ALBUM";
     private static final String MY_TRASH_ALBUM = "MY_TRASH_ALBUM";
     private static DataLocalManager instance;
     private SharedPreferences sharedPreferences;
@@ -24,7 +24,7 @@ public class DataLocalManager {
         instance = new DataLocalManager();
         instance.sharedPreferences = context.getSharedPreferences(MY_SHARED_PREFERENCES,Context.MODE_PRIVATE);
         instance.albumData = context.getSharedPreferences(MY_ALBUM,Context.MODE_PRIVATE);
-        instance.secretInfo = context.getSharedPreferences(MY_SECRET_ALBUM,Context.MODE_PRIVATE);
+        instance.secretInfo = context.getSharedPreferences(MY_PRIVATE_ALBUM,Context.MODE_PRIVATE);
         instance.albumTrash = context.getSharedPreferences(MY_TRASH_ALBUM,Context.MODE_PRIVATE);
     }
 

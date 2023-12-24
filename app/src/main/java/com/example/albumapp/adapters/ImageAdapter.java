@@ -128,8 +128,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                 LinearLayout linearLayout = dialog.findViewById(R.id.dialog_layout_photo);
                 ImageView iconFavorite = dialog.findViewById(R.id.iconFavorite);
 
-
-
                 String imgPath = listImages.get(position).getPath();
 
                 if(checkImgInFavorite(imgPath)){
@@ -185,6 +183,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                         Set<String> privateAlbum = new HashSet<>();
                         privateAlbum.add(imgPath);
                         DataLocalManager.getInstance().savePrivateAlbum(privateAlbum);
+                        listImages.remove(position);
+                        notifyDataSetChanged();
                         dialog.dismiss();
                     }
                 });
@@ -202,6 +202,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                             public void onClick(DialogInterface dialog, int which) {
                                 String currentDateString = getCurrentDateFormatted("yyyy-M-dd");
                                 DataLocalManager.getInstance().saveTrash(imgPath,convertDateStringToLong(currentDateString, "yyyy-M-dd"));
+                                listImages.remove(position);
+                                notifyDataSetChanged();
                                 dialog.dismiss();
                             }
                         });

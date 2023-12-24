@@ -128,8 +128,6 @@ public class FragmentPhoto extends Fragment {
         toolbar_photo = view.findViewById(R.id.toolbar_photo);
         setupToolBarPhoto();
 
-
-
         return view;
     }
 
@@ -198,7 +196,6 @@ public class FragmentPhoto extends Fragment {
         });
     }
 
-
     private void changeSpanCount() {
         if(spanCount >= 4) {
             spanCount = 1;
@@ -265,8 +262,6 @@ public class FragmentPhoto extends Fragment {
         }
     }
 
-
-
     //Camera
     private void eventCamera(){
 
@@ -285,11 +280,9 @@ public class FragmentPhoto extends Fragment {
             mActivityResultLauncher.launch(intent);
         } else {
             // Nếu không, yêu cầu quyền CAMERA
-
             requestPermissionLauncher.launch(Manifest.permission.CAMERA);
         }
     }
-
 
     private List<String> getListImagePaths(List<MyImage> images) {
         List<String> listPath = new ArrayList<>();

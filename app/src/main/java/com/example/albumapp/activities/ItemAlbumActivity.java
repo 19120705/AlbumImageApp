@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -84,29 +85,21 @@ public class ItemAlbumActivity extends AppCompatActivity {
                             recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
                         }
                     }
-//                    if (result.getResultCode() == RESULT_OK && requestCode == REQUEST_CODE_CHOOSE) {
-//                        int isMoved = data.getIntExtra("move", 0);
-//                        if (isMoved == 1) {
-//                            ArrayList<String> resultList = data.getStringArrayListExtra("list_result");
-//                            if (resultList != null) {
-//                                dataImages.remove(resultList);
-//                                recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
-//                            }
-//                        }
-//                    }
-//                    else if (Objects.equals(requestCode, "PRIVATE")) {
-//                        List<MyImage> resultList = data.getParcelableArrayListExtra("dataImages");
-//            myAsyncTask.execute();
-//                    }
-//                    if (Objects.equals(requestCode, "PHOTO")) {
-//                        String path_img = data.getStringExtra("path_img");
-//                        if(isSecret == 1) {
-//                            dataImages.remove(path_img);
-//                        }else if (duplicateImg == 2){
-//                            dataImages.remove(path_img);
-//                        }
-//                        recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
-//                    }
+                    if (Objects.equals(requestCode, "PUTBACK")) {
+                        List<MyImage> resultList = data.getParcelableArrayListExtra("list_result");
+                        if(!resultList.isEmpty()) {
+                            for (int i = 0; i < dataImages.size(); i++) {
+                                for (int j = 0; j < resultList.size(); j++) {
+                                    if (Objects.equals(dataImages.get(i).getPath(), resultList.get(j).getPath())) {
+                                        dataImages.remove(i);
+                                        i--;
+                                        break;
+                                    }
+                                }
+                            }
+                            recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
+                        }
+                    }
                 }
             });
 
@@ -190,7 +183,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
                     Intent intent_add = new Intent(ItemAlbumActivity.this, AddImageActivity.class);
                     intent_add.putParcelableArrayListExtra("dataImages", new ArrayList<>(dataImages));
                     intent_add.putExtra("name", albumName);
-                    intent_add.putExtra("isPrivate", 1);
+                    intent_add.putExtra("isPrivate", isPrivate);
                     someActivityResultLauncher.launch(intent_add);
                 }
                 else if (id == R.id.menu_remove_album) {
@@ -199,11 +192,12 @@ public class ItemAlbumActivity extends AppCompatActivity {
                 else if (id == R.id.menu_change_password) {
                     showEnterPasswordDialog();
                 }
+                else if (id == R.id.menu_put_back) {
+                    putBackTrash();
+                }
                 return true;
             }
         });
-        if(isPrivate == 1)
-            toolbarItemAlbum.getMenu().findItem(R.id.menu_add_image).setVisible(false);
     }
 
     private void spanCountEvent() {
@@ -291,6 +285,13 @@ public class ItemAlbumActivity extends AppCompatActivity {
         });
     }
 
+    private void putBackTrash() {
+        Intent intent = new Intent(getApplicationContext(), PutBackActivity.class);
+        ArrayList<MyImage> listImages = new ArrayList<>(dataImages);
+        intent.putParcelableArrayListExtra("dataImages", listImages);
+        someActivityResultLauncher.launch(intent);
+    }
+
     private void showChangePasswordDialog() {
         LayoutInflater inflater = LayoutInflater.from(this);
         View dialogView = inflater.inflate(R.layout.dialog_change_password, null);
@@ -340,8 +341,8 @@ public class ItemAlbumActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
+
     private String hashBcrypt(String password) {
         int costFactor = 12;
 
