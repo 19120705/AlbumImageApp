@@ -3,13 +3,16 @@ package com.example.albumapp.fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -40,6 +43,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.albumapp.activities.ItemAlbumActivity;
 import com.example.albumapp.activities.MultiSelectPhotoActivity;
 import com.example.albumapp.activities.PhotoActivity;
 import com.example.albumapp.adapters.CategoryAdapter;
@@ -53,7 +57,10 @@ import com.example.albumapp.utility.GetAllPhotoFromDisk;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class FragmentPhoto extends Fragment {
     private RecyclerView recyclerView;
@@ -147,6 +154,7 @@ public class FragmentPhoto extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         categoryAdapter.setListCategories(getListCategory());
+//        categoryAdapter.setListCategories(getListCategoryTitleMake());
         categoryAdapter.setSpanCount(spanCount);
         recyclerView.setAdapter(categoryAdapter);
     }
@@ -168,6 +176,10 @@ public class FragmentPhoto extends Fragment {
                 {
                     Intent intent = new Intent(context, MultiSelectPhotoActivity.class);
                     startActivity(intent);
+                }
+                else if(id == R.id.menuDuplicate)
+                {
+                    actionDuplicateImage();
                 }
 //                    case R.id.menuSearch:
 //
@@ -232,6 +244,86 @@ public class FragmentPhoto extends Fragment {
         }
     }
 
+    private void actionDuplicateImage(){
+        new DupRunnable(getContext()).execute();
+    }
+
+    public class DupRunnable implements Runnable {
+        private ProgressDialog mProgressDialog;
+        private ArrayList<MyImage> list;
+        private Context context;
+
+        public DupRunnable(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public void run() {
+            list = new ArrayList<>();
+            List<String> listImage = getListImg();
+            for(int i = 0; i< listImage.size();i++)
+            {
+                list.add(new MyImage(listImage.get(i)));
+            }
+
+            ((Activity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent_duplicate = new Intent(context, ItemAlbumActivity.class);
+                    intent_duplicate.putParcelableArrayListExtra("dataImages", list);
+                    intent_duplicate.putExtra("name", "Duplicate Image");
+                    intent_duplicate.putExtra("duplicateImg", 2);
+                    intent_duplicate.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent_duplicate);
+                    mProgressDialog.cancel();
+                }
+            });
+        }
+
+        public void execute() {
+            mProgressDialog = new ProgressDialog(context);
+            mProgressDialog.setMessage("Loading, please wait...");
+            mProgressDialog.show();
+
+            new Thread(this).start();
+        }
+    }
+
+    public ArrayList<String> getListImg(){
+        List<MyImage> imageList = GetAllPhotoFromDisk.getImages(getContext());
+        long hash = 0;
+        Map<Long,ArrayList<String>> map = new HashMap<Long,ArrayList<String>>();
+        for (MyImage img: imageList) {
+            Bitmap bitmap = BitmapFactory.decodeFile(img.getPath());
+            hash = hashBitmap(bitmap);
+            if(map.containsKey(hash)){
+                map.get(hash).add(img.getPath());
+            }else{
+                ArrayList<String> list = new ArrayList<>();
+                list.add(img.getPath());
+                map.put(hash,list);
+            }
+        }
+        ArrayList<String> result = new ArrayList<>();
+        Set set = map.keySet();
+        for (Object key: set) {
+            if(map.get(key).size() >=2){
+
+                result.addAll(map.get(key));
+            }
+        }
+        return result;
+    }
+    public long hashBitmap(Bitmap bmp){
+        long hash = 31;
+        for(int x = 1; x <  bmp.getWidth(); x=x*2){
+            for (int y = 1; y < bmp.getHeight(); y=y*2){
+                hash *= (bmp.getPixel(x,y) + 31);
+                hash = hash%1111122233;
+            }
+        }
+        return hash;
+    }
     public String getRealPathFromURI(Uri contentUri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         Cursor cursor = getActivity().managedQuery(contentUri, proj, null, null, null);
@@ -250,7 +342,6 @@ public class FragmentPhoto extends Fragment {
         public void run() {
             //doInBackground
             listCategory = getListCategory();
-
             // Update UI on the main thread
             //onPostExecute
             new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -304,6 +395,28 @@ public class FragmentPhoto extends Fragment {
             for (int i = 1; i < listImages.size(); i++) {
                 if (!listImages.get(i).getDateTaken().equals(listImages.get(i - 1).getDateTaken())) {
                     categoryList.add(new MyCategory(listImages.get(i).getDateTaken(), new ArrayList<>()));
+                    categoryCount++;
+                }
+                categoryList.get(categoryCount).addItemToListImages(listImages.get(i));
+            }
+            return categoryList;
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+    @NonNull
+    private List<MyCategory> getListCategoryTitleMake() {
+        List<MyCategory> categoryList = new ArrayList<>();
+        int categoryCount = 0;
+        listImages = GetAllPhotoFromDisk.getSelectiveImages(getContext());
+
+        try {
+            categoryList.add(new MyCategory(listImages.get(0).getMake(), new ArrayList<>()));
+            categoryList.get(categoryCount).addItemToListImages(listImages.get(0));
+            for (int i = 1; i < listImages.size(); i++) {
+                if (!listImages.get(i).getMake().equals(listImages.get(i - 1).getMake())) {
+                    categoryList.add(new MyCategory(listImages.get(i).getMake(), new ArrayList<>()));
                     categoryCount++;
                 }
                 categoryList.get(categoryCount).addItemToListImages(listImages.get(i));

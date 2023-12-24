@@ -99,7 +99,7 @@ public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.Item
 
         public void onBind(MyImage image, int pos) {
             // set ảnh cho imgPhoto bằng thư viện Glide
-            Glide.with(context).load(image.getThumb()).into(imgPhoto);
+            Glide.with(context).load(image.getPath()).into(imgPhoto);
 
             imgPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,7 +110,6 @@ public class ItemAlbumAdapter extends RecyclerView.Adapter<ItemAlbumAdapter.Item
                     Intent intent = new Intent(context, PhotoActivity.class);
                     intent.putParcelableArrayListExtra("dataImages", new ArrayList<>(listImages));
                     intent.putExtra("pos", pos);
-
                     ((Activity) context).startActivityForResult(intent, 10);
                 }
             });

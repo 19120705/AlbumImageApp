@@ -57,7 +57,7 @@
     <string name="put_back">Put back</string>
     <string name="multi_select">Multi Select</string>
     <string name="cancel">Cancel</string>
-
+    <string name="find_duplicate">Find duplicate image</string>
 
     <string name="simple">Simple</string>
     <string name="fade">Fade</string>

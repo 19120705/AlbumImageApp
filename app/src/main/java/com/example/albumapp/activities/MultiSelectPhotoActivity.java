@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -66,10 +67,12 @@ public class MultiSelectPhotoActivity extends AppCompatActivity implements Image
         if(selectedCount < 1)
         {
             textViewNumberSelectImage.setText("Select Image");
+            textViewNumberSelectImage.setTextColor(this.getColor(R.color.black));
             setButtonsEnabled(false);
         }
         else{
             textViewNumberSelectImage.setText("Selected "+String.valueOf(selectedCount) + " image");
+            textViewNumberSelectImage.setTextColor(this.getColor(R.color.colorPrimary));
             setButtonsEnabled(true);
         }
     }
@@ -145,12 +148,9 @@ public class MultiSelectPhotoActivity extends AppCompatActivity implements Image
                                 }
                             }
                             DataLocalManager.getInstance().saveTrash(listImageSelected.get(i).getPath(),convertDateStringToLong(currentDateString, "yyyy-M-dd"));
-
-
-                            imageAdapter.updateData(listImage);
-                            imageAdapter.clearSelections();
                         }
-
+                        imageAdapter.updateData(listImage);
+                        imageAdapter.clearSelections();
                     }
                 });
 
@@ -177,6 +177,7 @@ public class MultiSelectPhotoActivity extends AppCompatActivity implements Image
         PopupMenu popupMenu = new PopupMenu(this, view);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.menu_more_multiselect, popupMenu.getMenu());
+        ImageSelectAdapter adapter = (ImageSelectAdapter) recyclerView.getAdapter();
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -185,13 +186,16 @@ public class MultiSelectPhotoActivity extends AppCompatActivity implements Image
                 // Handle menu item clicks here
                 if(itemId==R.id.add_to_album)
                 {
+                    listImageSelected = adapter.getListSelectedImage();
 
                     return true;
                 }
                 else if(itemId==R.id.album_item_slideshow)
                 {
+                    listImageSelected = adapter.getListSelectedImage();
                     Intent intent_show = new Intent(MultiSelectPhotoActivity.this, SlideShowActivity.class);
                     ArrayList<MyImage> listImages = new ArrayList<>(listImageSelected);
+                    //Log.e("1234567", "onMenuItemClick: slide show "+listImages.get(0).getPath() );
                     intent_show.putParcelableArrayListExtra("dataImages", listImages);
                     intent_show.putExtra("name", "Slide show");
                     intent_show.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -200,6 +204,7 @@ public class MultiSelectPhotoActivity extends AppCompatActivity implements Image
                 }
                 else if(itemId==R.id.add_to_private)
                 {
+                    listImageSelected = adapter.getListSelectedImage();
                     Set<String> privateAlbum = new HashSet<>();
                     for(int i =0 ;i<listImageSelected.size();i++)
                     {
@@ -212,14 +217,39 @@ public class MultiSelectPhotoActivity extends AppCompatActivity implements Image
                         }
                         privateAlbum.add(listImageSelected.get(i).getPath());
                         DataLocalManager.getInstance().savePrivateAlbum(privateAlbum);
-
-                        imageAdapter.updateData(listImage);
-                        imageAdapter.clearSelections();
                     }
+                    imageAdapter.updateData(listImage);
+                    imageAdapter.clearSelections();
                     return true;
                 }
                 else if(itemId==R.id.add_to_favorite)
                 {
+                    listImageSelected = adapter.getListSelectedImage();
+                    List<String> imageListFavorite = DataLocalManager.getInstance()
+                            .getAlbumImages("Favorite");
+                    Set<String> setListImgFavorite = new HashSet<>();
+                    for (String i: imageListFavorite) {
+                        setListImgFavorite.add(i);
+                    }
+                    for(int i =0 ;i<listImageSelected.size();i++)
+                    {
+                        Boolean isDuplicate = false;
+                        for(String str:setListImgFavorite)
+                        {
+                            if(Objects.equals(listImageSelected.get(i).getPath(),str))
+                            {
+                                isDuplicate=true;
+                                break;
+                            }
+                        }
+                        if(!isDuplicate)
+                        {
+                            setListImgFavorite.add(listImageSelected.get(i).getPath());
+                        }
+                    }
+                    imageAdapter.clearSelections();
+                    DataLocalManager.getInstance().saveAlbum("Favorite",setListImgFavorite);
+                    Toast.makeText(MultiSelectPhotoActivity.this, setListImgFavorite.size()+"", Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;

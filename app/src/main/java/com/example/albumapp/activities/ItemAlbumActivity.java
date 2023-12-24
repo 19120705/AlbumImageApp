@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -99,6 +98,15 @@ public class ItemAlbumActivity extends AppCompatActivity {
                             }
                             recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
                         }
+                    }
+                    if (Objects.equals(requestCode, "PHOTO")) {
+//                        String path_img = data.getStringExtra("path_img");
+//                        if(isPrivate == 1) {
+//                            dataImages.remove(path_img);
+//                        }else if (duplicateImg == 2){
+//                            dataImages.remove(path_img);
+//                        }
+                        recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
                     }
                 }
             });
@@ -341,6 +349,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     private String hashBcrypt(String password) {

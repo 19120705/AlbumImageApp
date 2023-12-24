@@ -3,7 +3,6 @@ package com.example.albumapp.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -120,7 +119,6 @@ public class PrivateAlbumActivity extends AppCompatActivity {
         list.addAll(DataLocalManager.getInstance().getPrivateAlbum());
         List<MyImage> allImages = GetAllPhotoFromDisk.getImages(getApplicationContext());
         ArrayList<MyImage> dataImages = new ArrayList<>();
-        Log.e("TAG", "accessSecret: " + list.size());
         for (int i = 0; i < list.size(); i++){
             for (int j = 0; j < allImages.size(); j++) {
                 if (Objects.equals(list.get(i), allImages.get(j).getPath())) {
