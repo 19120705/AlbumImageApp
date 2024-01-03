@@ -143,7 +143,8 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface, 
                 else if(id==R.id.menuSetWallpaper)
                 {
                     File file = new File(imgPath);
-                    Uri uri = FileProvider.getUriForFile(PhotoActivity.this, getApplicationContext().getPackageName() + ".provider", file);
+                    Uri uri = FileProvider.getUriForFile(PhotoActivity.this,
+                            getApplicationContext().getPackageName() + ".provider", file);
                     Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Cấp quyền đọc URI cho Intent
                     intent.setDataAndType(uri, "image/*");
