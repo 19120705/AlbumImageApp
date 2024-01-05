@@ -2,7 +2,6 @@ package com.example.albumapp.fragments;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,19 +11,16 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -35,28 +31,20 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.albumapp.activities.ItemAlbumActivity;
 import com.example.albumapp.activities.MultiSelectPhotoActivity;
-import com.example.albumapp.activities.PhotoActivity;
 import com.example.albumapp.adapters.CategoryAdapter;
-import com.example.albumapp.adapters.ImageAdapter;
 import com.example.albumapp.R;
 import com.example.albumapp.models.MyCategory;
 import com.example.albumapp.models.MyImage;
-import com.example.albumapp.utility.DataLocalManager;
 import com.example.albumapp.utility.GetAllPhotoFromDisk;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -260,7 +248,7 @@ public class FragmentPhoto extends Fragment {
         @Override
         public void run() {
             list = new ArrayList<>();
-            List<String> listImage = getListImg();
+            List<String> listImage = getListImgDuplicate();
             for(int i = 0; i< listImage.size();i++)
             {
                 list.add(new MyImage(listImage.get(i)));
@@ -289,7 +277,7 @@ public class FragmentPhoto extends Fragment {
         }
     }
 
-    public ArrayList<String> getListImg(){
+    public ArrayList<String> getListImgDuplicate(){
         List<MyImage> imageList = GetAllPhotoFromDisk.getImages(getContext());
         long hash = 0;
         Map<Long,ArrayList<String>> map = new HashMap<Long,ArrayList<String>>();
