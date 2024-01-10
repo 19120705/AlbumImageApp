@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="General">
+        <SwitchPreference
+            android:key="nightMode"
+            android:title="@string/night_mode"
+            android:defaultValue="false"
+            android:summaryOn="@string/night_mode_activated"
+            android:summaryOff="@string/night_mode_deactivated"/>
+        <SwitchPreference
+            android:key="changeLanguage"
+            android:title="@string/languague"
+            android:defaultValue="false"
+            android:summaryOn="English"
+            android:summaryOff="Vietnamese"/>
+        <ListPreference
+            android:defaultValue="@string/english"
+            android:entries="@array/languages"
+            android:entryValues="@array/languages"
+            android:key="changeLanguageList"
+            android:summary="@string/language_summary"
+            android:title="@string/languague" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -58,6 +58,16 @@
     <string name="multi_select">Multi Select</string>
     <string name="cancel">Cancel</string>
     <string name="find_duplicate">Find duplicate image</string>
+    <string name="night_mode">Night Mode</string>
+    <string name="night_mode_activated"> Night mode is activated</string>
+    <string name="night_mode_deactivated"> Night mode is deactivated</string>
+    <string name="languague">Language</string>
+    <string name="language_summary" translatable="false">Select your language</string>
+    <string name="vietnamese">Vietnamese</string>
+    <string name="english">English</string>
+    <string name="source_code">Source Code</string>
+    <string name="contributors">Contributors</string>
+    <string name="libraries">Included Libraries</string>
 
     <string name="simple">Simple</string>
     <string name="fade">Fade</string>

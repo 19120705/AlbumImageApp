@@ -38,6 +38,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.albumapp.activities.ItemAlbumActivity;
 import com.example.albumapp.activities.MultiSelectPhotoActivity;
+import com.example.albumapp.activities.SettingsActivity;
 import com.example.albumapp.adapters.CategoryAdapter;
 import com.example.albumapp.R;
 import com.example.albumapp.models.MyCategory;
@@ -168,6 +169,11 @@ public class FragmentPhoto extends Fragment {
                 else if(id == R.id.menuDuplicate)
                 {
                     actionDuplicateImage();
+                }
+                else if(id == R.id.menuSettings)
+                {
+                    Intent intent = new Intent(getContext(), SettingsActivity.class);
+                    startActivity(intent);
                 }
 //                    case R.id.menuSearch:
 //
