@@ -124,8 +124,7 @@ public class PrivateAlbumActivity extends AppCompatActivity {
         for (int i = 0; i < list.size(); i++){
             for (int j = 0; j < allImages.size(); j++) {
                 if (Objects.equals(list.get(i), allImages.get(j).getPath())) {
-                    dataImages.add(allImages.get(i));
-                    Log.e("1234567", "accessSecret: " + list.get(i));
+                    dataImages.add(allImages.get(j));
                 }
             }
         }

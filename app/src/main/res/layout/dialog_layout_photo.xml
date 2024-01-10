@@ -18,7 +18,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 android:layout_gravity="center"
-                android:maxHeight="500dp"
+                android:maxHeight="300dp"
                 android:maxWidth="380dp"
                 />
         </com.google.android.material.card.MaterialCardView>
