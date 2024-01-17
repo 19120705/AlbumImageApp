@@ -412,11 +412,9 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface, 
     private void showNavigation(boolean flag) {
         if (!flag) {
             layoutButton.setVisibility(View.GONE);
-            //bottomNavigationView.setVisibility(View.INVISIBLE);
             toolbar.setVisibility(View.INVISIBLE);
         } else {
             layoutButton.setVisibility(View.VISIBLE);
-            //bottomNavigationView.setVisibility(View.VISIBLE);
             toolbar.setVisibility(View.VISIBLE);
         }
     }

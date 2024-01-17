@@ -175,28 +175,6 @@ public class FragmentPhoto extends Fragment {
                     Intent intent = new Intent(getContext(), SettingsActivity.class);
                     startActivity(intent);
                 }
-//                    case R.id.menuSearch:
-//
-//                    case R.id.menuCamera:
-//                        eventSearch(item);
-//                        //takenImg();
-//                        break;
-//                    case R.id.menuSearch_Advanced:
-//                        actionSearchAdvanced();
-//                        break;
-//                    case R.id.duplicateImages:
-//                        actionDuplicateImage();
-//                        break;
-//                    case R.id.menuFilter:
-//                        eventSearch(item);
-//                        Intent intent_mul = new Intent(getContext(), MultiSelectImage.class);
-//                        startActivityForResult(intent_mul, REQUEST_CODE_MULTI);
-//                        break;
-//                    case R.id.menuSettings:
-//                        eventSearch(item);
-//                        Intent intent = new Intent(getContext(), SettingsActivity.class);
-//                        startActivity(intent);
-//                }
                 return true;
             }
         });
