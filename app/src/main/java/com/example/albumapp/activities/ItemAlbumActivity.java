@@ -100,12 +100,6 @@ public class ItemAlbumActivity extends AppCompatActivity {
                         }
                     }
                     if (Objects.equals(requestCode, "PHOTO")) {
-//                        String path_img = data.getStringExtra("path_img");
-//                        if(isPrivate == 1) {
-//                            dataImages.remove(path_img);
-//                        }else if (duplicateImg == 2){
-//                            dataImages.remove(path_img);
-//                        }
                         recyclerView.setAdapter(new ItemAlbumAdapter(dataImages, spanCount));
                     }
                 }
@@ -149,10 +143,7 @@ public class ItemAlbumActivity extends AppCompatActivity {
         // Toolbar events
         toolbarItemAlbum.inflateMenu(R.menu.menu_top_item_album);
         toolbarItemAlbum.setTitle(albumName);
-//        if(isAlbum == 0) {
-//            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(false);
-//        } else
-//            toolbar_item_album.getMenu().findItem(R.id.menu_add_image).setVisible(true);
+
         if (isPrivate == 1) {
             toolbarItemAlbum.getMenu().findItem(R.id.menu_remove_album).setVisible(false);
         }

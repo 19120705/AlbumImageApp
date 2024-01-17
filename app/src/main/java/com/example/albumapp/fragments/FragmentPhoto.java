@@ -209,7 +209,6 @@ public class FragmentPhoto extends Fragment {
         else {
             spanCount++;
         }
-        //recyclerView.setLayoutManager(new GridLayoutManager(getContext(), spanCount));
         if (categoryAdapter == null) {
             return;
         }

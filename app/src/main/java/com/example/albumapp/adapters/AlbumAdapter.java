@@ -83,34 +83,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
                     context.startActivity(intent);
                 }
             });
-
-//            img_album.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View view) {
-//                    txtPath.setText(ref.getPathFolder());
-//                    txtPath.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            Toast.makeText(context, ref.getPathFolder(), Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-
-//                    layout_bottom_slide_show.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            slideShowEvents(ref);
-//                        }
-//                    });
-//                    layout_bottom_delete.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            deleteEvents(ref, pos);
-//                        }
-//                    });
-//                    return true;
-//                }
-//            });
-
         }
 
         private void bindData(MyAlbum ref) {
@@ -119,29 +91,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             if (ref.getImage()!=null) {
                 Glide.with(context).load(ref.getImage().getThumb()).into(imgAlbum);
             }
-
-//
-//        private void slideShowEvents(@NonNull MyAlbum ref) {
-//            Intent intent = new Intent(context, SlideShowActivity.class);
-//            ArrayList<String> list = new ArrayList<>();
-//            for(int i=0;i<ref.getList().size();i++) {
-//                list.add(ref.getList().get(i).getThumb());
-//            }
-//            intent.putStringArrayListExtra("data_slide", list);
-//            intent.putExtra("name", ref.getName());
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            context.startActivity(intent);
-//        }
-//        private void deleteEvents(MyAlbum ref, int pos) {
-//            for(int i=0;i<ref.getList().size();i++) {
-//                Uri targetUri = Uri.parse("file://" + ref.getList().get(i).getPath());
-//                File file = new File(targetUri.getPath());
-//                if (file.exists()){
-//                    file.delete();
-//                }
-//            }
-//            mListAlbums.remove(pos);
-//            notifyDataSetChanged();
         }
     }
 }

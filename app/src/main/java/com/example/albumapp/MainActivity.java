@@ -63,14 +63,6 @@ public class MainActivity extends AppCompatActivity {
                 {
                     viewPager2.setCurrentItem(1);
                 }
-                if(item.getItemId()==R.id.trash)
-                {
-                    viewPager2.setCurrentItem(2);
-                }
-                if(item.getItemId()==R.id.favorite)
-                {
-                    viewPager2.setCurrentItem(3);
-                }
                 return true;
             }
         });
@@ -95,16 +87,7 @@ public class MainActivity extends AppCompatActivity {
                         btnNavigationView.getMenu().findItem(R.id.photo).setChecked(true);
                         break;
                     case 1:
-
                         btnNavigationView.getMenu().findItem(R.id.album).setChecked(true);
-                        break;
-                    case 2:
-
-                        btnNavigationView.getMenu().findItem(R.id.trash).setChecked(true);
-                        break;
-                    case 3:
-
-                        btnNavigationView.getMenu().findItem(R.id.favorite).setChecked(true);
                         break;
                 }
             }

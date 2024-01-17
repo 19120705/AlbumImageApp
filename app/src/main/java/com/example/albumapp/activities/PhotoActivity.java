@@ -316,9 +316,6 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface, 
         bottomSheetDialog = new BottomSheetDialog(PhotoActivity.this);
         bottomSheetDialog.setContentView(viewDialog);
         new Thread(new MyRunnable(this)).start();
-//        MyAsyncTask myAsyncTask = new MyAsyncTask();
-//        myAsyncTask.execute();
-
     }
     public Boolean checkImgInFavorite(String  Path){
         for (String img: imageListFavorite) {
@@ -411,20 +408,6 @@ public class PhotoActivity extends AppCompatActivity implements PhotoInterface, 
                     Toast.LENGTH_LONG).show();
         }
     }
-//    private void setUpToolBar() {
-//        // Toolbar events
-//        toolbar.inflateMenu(R.menu.menu_top_);
-//        setTitleToolbar("abc");
-//
-//        // Show back button
-//        toolbar_picture.setNavigationIcon(R.drawable.abc_ic_ab_back_material);
-//        toolbar_picture.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                finish();
-//            }
-//        });
-//    }
 
     private void showNavigation(boolean flag) {
         if (!flag) {
